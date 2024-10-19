@@ -6,13 +6,17 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'core/constants/app_strings.dart';
 import 'core/routes/app_routes.dart';
 import 'core/style/app_theme.dart';
+import 'dependency_injection.dart';
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  DependencyInjection.initDependencies();
+
   runApp(const MainApp());
 }
 
@@ -29,7 +33,7 @@ class MainApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: AppStrings.appTitle,
           theme: AppTheme.lightTheme,
-          initialRoute: AppRoutes.home,
+          initialRoute: AppRoutes.register,
           getPages: AppRoutes.routes,
         );
       },
