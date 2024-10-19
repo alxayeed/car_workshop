@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 import 'core/constants/app_strings.dart';
+import 'core/routes/app_routes.dart';
 import 'core/style/app_theme.dart';
 import 'firebase_options.dart';
 
@@ -28,11 +29,8 @@ class MainApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: AppStrings.appTitle,
           theme: AppTheme.lightTheme,
-          home: const Scaffold(
-            body: Center(
-              child: Text(AppStrings.welcomeMessage),
-            ),
-          ),
+          initialRoute: AppRoutes.home,
+          getPages: AppRoutes.routes,
         );
       },
     );
