@@ -26,20 +26,21 @@ class AuthController extends GetxController {
     isLoading.value = false;
 
     result.fold(
-      (Failure failure) {
+          (Failure failure) {
         failureMessage.value = failure.message;
         Get.snackbar(
           AppStrings.error,
           failureMessage.value,
-        ); // Show error message
+          backgroundColor: AppColors.errorBackground,
+        );
       },
-      (_) {
+          (_) {
         Get.snackbar(
           AppStrings.success,
           AppStrings.registrationSuccess,
           backgroundColor: AppColors.successBackground,
           duration: const Duration(seconds: 5),
-        ); // Show success message
+        );
         Get.offAllNamed(AppRoutes.login);
       },
     );
@@ -52,12 +53,15 @@ class AuthController extends GetxController {
     isLoading.value = false;
 
     result.fold(
-      (Failure failure) {
+          (Failure failure) {
         failureMessage.value = failure.message;
         Get.snackbar(
-            AppStrings.error, failureMessage.value); // Show error message
+          AppStrings.error,
+          failureMessage.value,
+          backgroundColor: AppColors.errorBackground,
+        );
       },
-      (_) {
+          (_) {
         Get.offAllNamed(AppRoutes.home);
       },
     );
@@ -69,12 +73,15 @@ class AuthController extends GetxController {
     isLoading.value = false;
 
     result.fold(
-      (Failure failure) {
+          (Failure failure) {
         failureMessage.value = failure.message;
         Get.snackbar(
-            AppStrings.error, failureMessage.value); // Show error message
+          AppStrings.error,
+          failureMessage.value,
+          backgroundColor: AppColors.errorBackground,
+        );
       },
-      (_) {
+          (_) {
         Get.offAllNamed(AppRoutes.login);
       },
     );
