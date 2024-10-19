@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "695224188894",
+    "project_id": "car-workshop-d07d8",
+    "storage_bucket": "car-workshop-d07d8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:695224188894:android:752f946af576021d88e74f",
+        "android_client_info": {
+          "package_name": "com.example.car_workshop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgWzRQCvV37dgwWJSE4ofobb2lOzSsavM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
