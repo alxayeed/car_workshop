@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/routes/app_routes.dart';
+import '../../../../core/style/app_fonts.dart'; // Import AppFonts
+import '../widgets/custom_text_field.dart';
+import '../widgets/redirection_button.dart';
 import '../../presentation/controllers/auth_controller.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -14,44 +19,69 @@ class RegisterScreen extends StatelessWidget {
     final TextEditingController passwordController = TextEditingController();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.register),
-      ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(16.w),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextField(
+              SizedBox(height: 100.h),
+              // Title
+              Text(
+                AppStrings.register,
+                style: AppFonts.size32W700,
+              ),
+              SizedBox(height: 20.h),
+
+              // Name TextField
+              CustomTextField(
                 controller: nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                ),
+                labelText: AppStrings.name,
+                prefixIcon: Icons.person,
               ),
-              TextField(
+
+              // Email TextField
+              CustomTextField(
                 controller: emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                ),
+                labelText: AppStrings.email,
+                keyboardType: TextInputType.emailAddress,
+                prefixIcon: Icons.email,
               ),
-              TextField(
+
+              // Password TextField
+              CustomTextField(
                 controller: passwordController,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                ),
+                labelText: AppStrings.password,
                 obscureText: true,
+                prefixIcon: Icons.lock,
               ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  final String name = nameController.text;
-                  final String email = emailController.text;
-                  final String password = passwordController.text;
-        
-                  authController.register(name, email, password);
-                },
-                child: const Text('Register'),
+
+              SizedBox(height: 20.h),
+
+              // Register Button
+              Obx(() {
+                return ElevatedButton(
+                  onPressed: authController.isLoading.value
+                      ? null
+                      : () {
+                    final String name = nameController.text.trim();
+                    final String email = emailController.text.trim();
+                    final String password = passwordController.text.trim();
+                    authController.register(name, email, password);
+                  },
+                  child: Text(authController.isLoading.value
+                      ? AppStrings.pleaseWait
+                      : AppStrings.register),
+                );
+              }),
+
+              SizedBox(height: 10.h),
+
+              // Redirection Button to Login Screen
+              const RedirectionButton(
+                regularText: AppStrings.alreadyRegistered,
+                linkText: AppStrings.loginLink,
+                route: AppRoutes.login,
               ),
             ],
           ),

@@ -51,4 +51,5 @@ class AppFonts {
     fontWeight: FontWeight.w500,
     color: Colors.black,
   );
+
 }
