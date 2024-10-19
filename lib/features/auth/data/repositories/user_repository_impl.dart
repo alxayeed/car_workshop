@@ -33,4 +33,9 @@ class UserRepositoryImpl implements UserRepository {
     return result.map((userModels) => userModels.map((model) => model.toEntity()).toList());
   }
 
+  @override
+  Future<Either<Failure, void>> createUser(UserEntity user) async {
+    final userModel = user.toModel();
+    return await remoteDataSource.createUser(userModel);
+  }
 }

@@ -9,4 +9,5 @@ abstract class UserRemoteDataSource {
   Future<Either<Failure, void>> logoutUser();
   Future<Either<Failure, List<UserModel>>> getAllMechanics();
   Future<Either<Failure, UserModel>> getUserById(String id);
+  Future<Either<Failure, void>> createUser(UserModel user);
 }
