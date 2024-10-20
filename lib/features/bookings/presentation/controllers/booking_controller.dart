@@ -1,7 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/errors/failure.dart';
+import '../../../../core/style/app_colors.dart';
 import '../../domain/entities/booking_entity.dart';
 import '../../domain/usecases/add_booking_use_case.dart';
 import '../../domain/usecases/fetch_bookings_use_case.dart';
@@ -20,10 +22,9 @@ class BookingsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadBookings(); // Remove user entity and just load bookings
+    loadBookings();
   }
 
-  // Fetch bookings (no user entity needed)
   Future<void> loadBookings() async {
     isLoading.value = true;
     final Either<Failure, List<BookingEntity>> result =
@@ -40,19 +41,35 @@ class BookingsController extends GetxController {
     isLoading.value = false;
   }
 
-  // Add a booking
   Future<void> addBooking(BookingEntity booking) async {
     isAddingBooking.value = true;
     final Either<Failure, void> result = await addBookingUseCase(booking);
+
     result.fold(
       (failure) {
         errorMessage.value = failure.toString();
+        Get.snackbar(
+          AppStrings.error,
+          errorMessage.value,
+          backgroundColor: AppColors.errorBackground,
+        );
       },
       (_) {
-        // Successfully added, reload bookings or add to the list locally
         bookings.add(booking);
+        Get.snackbar(
+          AppStrings.success,
+          'Booking added.',
+          backgroundColor: AppColors.successBackground,
+          duration: const Duration(seconds: 5),
+        );
+        navigateToBookingsList();
       },
     );
+
     isAddingBooking.value = false;
+  }
+
+  void navigateToBookingsList() {
+    Get.offAllNamed('/bookings');
   }
 }

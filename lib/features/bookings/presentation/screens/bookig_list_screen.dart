@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../domain/entities/booking_entity.dart';
 import '../controllers/booking_controller.dart';
+import '../screens/add_booking_screen.dart'; // Import the AddBookingScreen
 
 class BookingsListScreen extends StatelessWidget {
   final BookingsController controller = Get.put(
@@ -18,6 +19,7 @@ class BookingsListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('Bookings'),
       ),
       body: Obx(() {
@@ -48,6 +50,13 @@ class BookingsListScreen extends StatelessWidget {
           },
         );
       }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.to(() => AddBookingScreen());
+        },
+        tooltip: 'Add Booking',
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
