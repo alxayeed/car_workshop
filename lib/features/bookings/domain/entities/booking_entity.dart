@@ -45,4 +45,24 @@ class BookingEntity extends Equatable {
       mechanicId: mechanicId,
     );
   }
+
+  BookingEntity copyWith({
+    String? id,
+    CarEntity? car,
+    CustomerEntity? customer,
+    String? title,
+    DateTime? startDateTime,
+    DateTime? endDateTime,
+    String? mechanicId,
+  }) {
+    return BookingEntity(
+      id: id ?? this.id,
+      car: car ?? this.car,
+      customer: customer ?? this.customer,
+      title: title ?? this.title,
+      startDateTime: startDateTime ?? this.startDateTime,
+      endDateTime: endDateTime ?? this.endDateTime,
+      mechanicId: mechanicId ?? this.mechanicId,
+    );
+  }
 }

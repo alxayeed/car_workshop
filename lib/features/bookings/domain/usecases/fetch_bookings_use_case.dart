@@ -13,6 +13,8 @@ class FetchBookingsUseCase {
 
   Future<Either<Failure, List<BookingEntity>>> call(UserEntity? user) async {
     try {
+      return await repository.fetchBookings();
+
       if (user?.role == UserRole.mechanic) {
         return await repository.getBookingsByMechanic(user?.id ?? "");
       } else {
