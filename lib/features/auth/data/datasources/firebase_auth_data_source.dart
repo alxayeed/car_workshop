@@ -1,10 +1,11 @@
 import 'package:car_workshop/features/auth/data/datasources/user_remote_datasource.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import '../../../../core/enums/user_role.dart';
 import '../../../../core/errors/failure.dart';
 import '../models/user_model.dart';
-import '../../../../core/enums/user_role.dart';
 
 class FirebaseAuthDataSource implements UserRemoteDataSource {
   final FirebaseAuth firebaseAuth;
@@ -89,7 +90,17 @@ class FirebaseAuthDataSource implements UserRemoteDataSource {
   @override
   Future<Either<Failure, List<UserModel>>> getAllMechanics() async {
     try {
-      return const Right([]);
+      QuerySnapshot querySnapshot = await fireStore
+          .collection('users')
+          .where('role', isEqualTo: UserRole.mechanic.name)
+          .get();
+
+      // Map the documents to a list of UserModel
+      List<UserModel> mechanics = querySnapshot.docs
+          .map((doc) => UserModel.fromJson(doc.data() as Map<String, dynamic>))
+          .toList();
+
+      return Right(mechanics);
     } catch (error) {
       return Left(ServerFailure(error.toString()));
     }

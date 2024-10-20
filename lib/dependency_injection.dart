@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'features/auth/data/datasources/firebase_auth_data_source.dart';
 import 'features/auth/data/datasources/user_remote_datasource.dart';
 import 'features/auth/data/repositories/user_repository_impl.dart';
 import 'features/auth/domain/repositories/user_repository.dart';
 import 'features/auth/domain/usecases/create_user_use_case.dart';
+import 'features/auth/domain/usecases/get_all_mechanics_use_case.dart';
 import 'features/auth/domain/usecases/login_use_case.dart';
 import 'features/auth/domain/usecases/logout_use_case.dart';
 import 'features/auth/domain/usecases/register_usecase.dart';
@@ -24,6 +26,9 @@ class DependencyInjection {
     // Firebase Services
     Get.put<FirebaseAuth>(FirebaseAuth.instance);
     Get.put<FirebaseFirestore>(FirebaseFirestore.instance);
+
+    // Register GetStorage
+    Get.put<GetStorage>(GetStorage());
 
     // Data Sources
     Get.put<UserRemoteDataSource>(FirebaseAuthDataSource(
@@ -46,10 +51,25 @@ class DependencyInjection {
       Get.find<UserRepository>(),
       Get.find<CreateUserUseCase>(),
     ));
-    Get.put<LoginUserUseCase>(LoginUserUseCase(Get.find<UserRepository>()));
-    Get.put<LogoutUserUseCase>(LogoutUserUseCase(Get.find<UserRepository>()));
+    Get.put<LoginUserUseCase>(
+      LoginUserUseCase(
+        Get.find<UserRepository>(),
+      ),
+    );
+    Get.put<LogoutUserUseCase>(
+      LogoutUserUseCase(
+        Get.find<UserRepository>(),
+      ),
+    );
+    Get.put<GetAllMechanicsUseCase>(GetAllMechanicsUseCase(
+        Get.find<UserRepository>(), Get.find<GetStorage>()));
+
     Get.put<FetchBookingsUseCase>(
-        FetchBookingsUseCase(Get.find<BookingRepository>()));
+      FetchBookingsUseCase(
+        Get.find<BookingRepository>(),
+        Get.find(),
+      ),
+    );
     Get.put<AddBookingUseCase>(
         AddBookingUseCase(Get.find<BookingRepository>()));
 
