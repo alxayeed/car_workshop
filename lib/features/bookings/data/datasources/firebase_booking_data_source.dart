@@ -13,10 +13,7 @@ class FirebaseBookingDataSource implements BookingRemoteDataSource {
   @override
   Future<Either<Failure, void>> addBooking(BookingModel booking) async {
     try {
-      await fireStore
-          .collection('bookings')
-          .doc(booking.id)
-          .set(booking.toJson());
+      await fireStore.collection('bookings').add(booking.toJson());
       return const Right(null);
     } catch (error) {
       return Left(ServerFailure(error.toString()));

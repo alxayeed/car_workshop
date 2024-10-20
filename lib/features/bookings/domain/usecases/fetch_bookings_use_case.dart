@@ -11,12 +11,12 @@ class FetchBookingsUseCase {
 
   FetchBookingsUseCase(this.repository);
 
-  Future<Either<Failure, List<BookingEntity>>> call(UserEntity user) async {
+  Future<Either<Failure, List<BookingEntity>>> call(UserEntity? user) async {
     try {
-      if (user.role == UserRole.admin) {
-        return await repository.fetchBookings();
+      if (user?.role == UserRole.mechanic) {
+        return await repository.getBookingsByMechanic(user?.id ?? "");
       } else {
-        return await repository.getBookingsByMechanic(user.id ?? "");
+        return await repository.fetchBookings();
       }
     } catch (error) {
       return Left(ServerFailure(error.toString()));
