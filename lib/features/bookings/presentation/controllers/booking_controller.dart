@@ -39,6 +39,8 @@ class BookingsController extends GetxController {
         .map((mechanicJson) => UserModel.fromJson(mechanicJson).toEntity())
         .toList();
 
+    mechanics.clear();
+
     mechanics.addAll(mechanicEntities);
 
     final Either<Failure, List<BookingEntity>> bookingsResult =

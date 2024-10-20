@@ -26,6 +26,8 @@ class AddBookingScreen extends StatelessWidget {
   final TextEditingController startDateTimeController = TextEditingController();
   final TextEditingController endDateTimeController = TextEditingController();
 
+  RxString selectedMechanicId = ''.obs;
+
   // Helper function to show a date picker and format the date
   Future<void> _selectDate(
       BuildContext context, TextEditingController controller) async {
@@ -93,6 +95,28 @@ class AddBookingScreen extends StatelessWidget {
               controller: titleController,
               decoration: const InputDecoration(labelText: 'Booking Title'),
             ),
+            // Mechanic Dropdown
+            const SizedBox(height: 20),
+            const Text('Assign Mechanic', style: TextStyle(fontSize: 18)),
+            Obx(() => DropdownButton<String>(
+                  hint: const Text('Select Mechanic'),
+                  value: selectedMechanicId.value.isEmpty
+                      ? null
+                      : selectedMechanicId.value,
+                  isExpanded: true,
+                  items: bookingsController.mechanics
+                      .map(
+                        (mechanic) => DropdownMenuItem<String>(
+                          value: mechanic.id,
+                          child: Text(mechanic.name),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    selectedMechanicId.value = value!;
+                  },
+                )),
+            const SizedBox(height: 20),
             // Start Date Picker
             TextField(
               controller: startDateTimeController,
@@ -141,7 +165,7 @@ class AddBookingScreen extends StatelessWidget {
                         startDateTime:
                             DateTime.parse(startDateTimeController.text),
                         endDateTime: DateTime.parse(endDateTimeController.text),
-                        mechanicId: "",
+                        mechanicId: selectedMechanicId.value,
                       );
 
                       bookingsController.addBooking(booking);
