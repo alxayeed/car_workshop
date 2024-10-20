@@ -18,10 +18,10 @@ class BookingsListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Bookings'),
-      ),
+      // appBar: AppBar(
+      //   centerTitle: true,
+      //   title: const Text('Bookings'),
+      // ),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
