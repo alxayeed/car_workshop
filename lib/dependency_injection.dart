@@ -21,42 +21,47 @@ import 'features/bookings/presentation/controllers/booking_controller.dart';
 
 class DependencyInjection {
   static void initDependencies() {
+    // Firebase Services
+    Get.put<FirebaseAuth>(FirebaseAuth.instance);
+    Get.put<FirebaseFirestore>(FirebaseFirestore.instance);
+
     // Data Sources
-    Get.lazyPut<FirebaseAuth>(() => FirebaseAuth.instance);
-    Get.lazyPut<FirebaseFirestore>(() => FirebaseFirestore.instance);
-
-    Get.lazyPut<UserRemoteDataSource>(() => FirebaseAuthDataSource(
-          Get.find<FirebaseAuth>(),
-          Get.find<FirebaseFirestore>(),
-        ));
-
-    Get.lazyPut<BookingRemoteDataSource>(
-        () => FirebaseBookingDataSource(Get.find<FirebaseFirestore>()));
+    Get.put<UserRemoteDataSource>(FirebaseAuthDataSource(
+      Get.find<FirebaseAuth>(),
+      Get.find<FirebaseFirestore>(),
+    ));
+    Get.put<BookingRemoteDataSource>(FirebaseBookingDataSource(
+      Get.find<FirebaseFirestore>(),
+    ));
 
     // Repositories
-    Get.lazyPut<UserRepository>(() => UserRepositoryImpl(Get.find()));
-    Get.lazyPut<BookingRepository>(() => BookingRepositoryImpl(Get.find()));
+    Get.put<UserRepository>(
+        UserRepositoryImpl(Get.find<UserRemoteDataSource>()));
+    Get.put<BookingRepository>(
+        BookingRepositoryImpl(Get.find<BookingRemoteDataSource>()));
 
     // Use Cases
-    Get.lazyPut<CreateUserUseCase>(() => CreateUserUseCase(Get.find()));
-    Get.lazyPut<RegisterUserUseCase>(
-        () => RegisterUserUseCase(Get.find(), Get.find<CreateUserUseCase>()));
-    Get.lazyPut<LoginUserUseCase>(() => LoginUserUseCase(Get.find()));
-    Get.lazyPut<LogoutUserUseCase>(() => LogoutUserUseCase(Get.find()));
-    Get.lazyPut<FetchBookingsUseCase>(() => FetchBookingsUseCase(Get.find()));
-    Get.lazyPut<AddBookingUseCase>(() => AddBookingUseCase(Get.find()));
+    Get.put<CreateUserUseCase>(CreateUserUseCase(Get.find<UserRepository>()));
+    Get.put<RegisterUserUseCase>(RegisterUserUseCase(
+      Get.find<UserRepository>(),
+      Get.find<CreateUserUseCase>(),
+    ));
+    Get.put<LoginUserUseCase>(LoginUserUseCase(Get.find<UserRepository>()));
+    Get.put<LogoutUserUseCase>(LogoutUserUseCase(Get.find<UserRepository>()));
+    Get.put<FetchBookingsUseCase>(
+        FetchBookingsUseCase(Get.find<BookingRepository>()));
+    Get.put<AddBookingUseCase>(
+        AddBookingUseCase(Get.find<BookingRepository>()));
 
     // Controllers
-    Get.lazyPut<AuthController>(() => AuthController(
-          Get.find<RegisterUserUseCase>(),
-          Get.find<LoginUserUseCase>(),
-          Get.find<LogoutUserUseCase>(),
-        ));
-    Get.lazyPut<BookingsController>(
-      () => BookingsController(
-        Get.find<FetchBookingsUseCase>(),
-        Get.find(),
-      ),
-    );
+    Get.put<AuthController>(AuthController(
+      Get.find<RegisterUserUseCase>(),
+      Get.find<LoginUserUseCase>(),
+      Get.find<LogoutUserUseCase>(),
+    ));
+    Get.put<BookingsController>(BookingsController(
+      Get.find<FetchBookingsUseCase>(),
+      Get.find<AddBookingUseCase>(),
+    ));
   }
 }
