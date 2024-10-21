@@ -18,7 +18,9 @@ import 'features/bookings/data/datasources/firebase_booking_data_source.dart';
 import 'features/bookings/data/repositories/booking_repository_impl.dart';
 import 'features/bookings/domain/repositories/booking_repository.dart';
 import 'features/bookings/domain/usecases/add_booking_use_case.dart';
-import 'features/bookings/domain/usecases/fetch_bookings_use_case.dart';
+import 'features/bookings/domain/usecases/fetch_daily_bookings_use_case.dart';
+import 'features/bookings/domain/usecases/fetch_monthly_bookings_use_case.dart';
+import 'features/bookings/domain/usecases/fetch_weekly_bookings_use_case.dart';
 import 'features/bookings/presentation/controllers/booking_controller.dart';
 
 class DependencyInjection {
@@ -64,10 +66,20 @@ class DependencyInjection {
     Get.put<GetAllMechanicsUseCase>(GetAllMechanicsUseCase(
         Get.find<UserRepository>(), Get.find<GetStorage>()));
 
-    Get.put<FetchBookingsUseCase>(
-      FetchBookingsUseCase(
+    // Booking Use Cases
+    Get.put<FetchDailyBookingsUseCase>(
+      FetchDailyBookingsUseCase(
         Get.find<BookingRepository>(),
-        Get.find(),
+      ),
+    );
+    Get.put<FetchWeeklyBookingsUseCase>(
+      FetchWeeklyBookingsUseCase(
+        Get.find<BookingRepository>(),
+      ),
+    );
+    Get.put<FetchMonthlyBookingsUseCase>(
+      FetchMonthlyBookingsUseCase(
+        Get.find<BookingRepository>(),
       ),
     );
     Get.put<AddBookingUseCase>(
@@ -79,8 +91,11 @@ class DependencyInjection {
       Get.find<LoginUserUseCase>(),
       Get.find<LogoutUserUseCase>(),
     ));
+
     Get.put<BookingsController>(BookingsController(
-      Get.find<FetchBookingsUseCase>(),
+      Get.find<FetchDailyBookingsUseCase>(),
+      Get.find<FetchWeeklyBookingsUseCase>(),
+      Get.find<FetchMonthlyBookingsUseCase>(),
       Get.find<AddBookingUseCase>(),
     ));
   }

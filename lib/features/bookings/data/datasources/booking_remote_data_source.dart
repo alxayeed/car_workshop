@@ -12,4 +12,9 @@ abstract class BookingRemoteDataSource {
 
   Future<Either<Failure, List<BookingModel>>> getBookingsByMechanic(
       String mechanicId);
+
+  Future<Either<Failure, List<BookingModel>>> getBookingsByDate(DateTime date);
+
+  Future<Either<Failure, List<BookingModel>>> getBookingsInRange(
+      DateTime fromDate, DateTime toDate);
 }
