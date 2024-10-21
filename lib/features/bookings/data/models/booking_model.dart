@@ -1,5 +1,6 @@
 import 'package:car_workshop/features/bookings/domain/entities/booking_entity.dart';
 
+import '../../../auth/data/models/user_model.dart';
 import 'car_model.dart';
 import 'customer_model.dart';
 
@@ -11,7 +12,7 @@ class BookingModel extends BookingEntity {
     required super.title,
     required super.startDateTime,
     required super.endDateTime,
-    required super.mechanicId,
+    required UserModel super.mechanic,
   });
 
   factory BookingModel.fromJson(Map<String, dynamic> json) {
@@ -23,7 +24,7 @@ class BookingModel extends BookingEntity {
       title: json['title'] as String,
       startDateTime: DateTime.parse(json['startDateTime'] as String),
       endDateTime: DateTime.parse(json['endDateTime'] as String),
-      mechanicId: json['mechanicId'] as String,
+      mechanic: UserModel.fromJson(json['mechanic'] as Map<String, dynamic>),
     );
   }
 
@@ -35,7 +36,7 @@ class BookingModel extends BookingEntity {
       'title': title,
       'startDateTime': startDateTime.toIso8601String(),
       'endDateTime': endDateTime.toIso8601String(),
-      'mechanicId': mechanicId,
+      'mechanic': (mechanic as UserModel).toJson(),
     };
   }
 
@@ -47,7 +48,7 @@ class BookingModel extends BookingEntity {
       title: title,
       startDateTime: startDateTime,
       endDateTime: endDateTime,
-      mechanicId: mechanicId,
+      mechanic: (mechanic as UserModel).toEntity(),
     );
   }
 }

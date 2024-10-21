@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../auth/domain/entities/user_entity.dart';
 import '../../domain/entities/booking_entity.dart';
 import '../../domain/entities/car_entity.dart';
 import '../../domain/entities/customer_entity.dart';
@@ -26,9 +27,8 @@ class AddBookingScreen extends StatelessWidget {
   final TextEditingController startDateTimeController = TextEditingController();
   final TextEditingController endDateTimeController = TextEditingController();
 
-  RxString selectedMechanicId = ''.obs;
+  Rx<UserEntity?> selectedMechanic = Rx<UserEntity?>(null);
 
-  // Helper function to show a date picker and format the date
   Future<void> _selectDate(
       BuildContext context, TextEditingController controller) async {
     final DateTime? picked = await showDatePicker(
@@ -37,9 +37,8 @@ class AddBookingScreen extends StatelessWidget {
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
-
     if (picked != null) {
-      controller.text = "${picked.toLocal()}".split(' ')[0]; // Format the date
+      controller.text = "${picked.toLocal()}".split(' ')[0];
     }
   }
 
@@ -95,29 +94,25 @@ class AddBookingScreen extends StatelessWidget {
               controller: titleController,
               decoration: const InputDecoration(labelText: 'Booking Title'),
             ),
-            // Mechanic Dropdown
             const SizedBox(height: 20),
             const Text('Assign Mechanic', style: TextStyle(fontSize: 18)),
-            Obx(() => DropdownButton<String>(
+            Obx(() => DropdownButton<UserEntity>(
                   hint: const Text('Select Mechanic'),
-                  value: selectedMechanicId.value.isEmpty
-                      ? null
-                      : selectedMechanicId.value,
+                  value: selectedMechanic.value,
                   isExpanded: true,
                   items: bookingsController.mechanics
                       .map(
-                        (mechanic) => DropdownMenuItem<String>(
-                          value: mechanic.id,
+                        (mechanic) => DropdownMenuItem<UserEntity>(
+                          value: mechanic,
                           child: Text(mechanic.name),
                         ),
                       )
                       .toList(),
                   onChanged: (value) {
-                    selectedMechanicId.value = value!;
+                    selectedMechanic.value = value;
                   },
                 )),
             const SizedBox(height: 20),
-            // Start Date Picker
             TextField(
               controller: startDateTimeController,
               readOnly: true,
@@ -127,7 +122,6 @@ class AddBookingScreen extends StatelessWidget {
               ),
               onTap: () => _selectDate(context, startDateTimeController),
             ),
-            // End Date Picker
             TextField(
               controller: endDateTimeController,
               readOnly: true,
@@ -165,7 +159,7 @@ class AddBookingScreen extends StatelessWidget {
                         startDateTime:
                             DateTime.parse(startDateTimeController.text),
                         endDateTime: DateTime.parse(endDateTimeController.text),
-                        mechanicId: selectedMechanicId.value,
+                        mechanic: selectedMechanic.value!,
                       );
 
                       bookingsController.addBooking(booking);

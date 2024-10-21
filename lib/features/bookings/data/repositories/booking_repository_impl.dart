@@ -20,7 +20,7 @@ class BookingRepositoryImpl implements BookingRepository {
         title: booking.title,
         startDateTime: booking.startDateTime,
         endDateTime: booking.endDateTime,
-        mechanicId: booking.mechanicId,
+        mechanic: booking.mechanic.toModel(),
       );
       await remoteDataSource.addBooking(bookingModel);
       return const Right(null);

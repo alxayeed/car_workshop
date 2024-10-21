@@ -46,7 +46,7 @@ class BookingsListScreen extends StatelessWidget {
               return ListTile(
                 title: Text(booking.title),
                 subtitle: Text(
-                    'Customer: ${booking.customer.name}\nMechanic ID: ${booking.mechanicId}'),
+                    'Customer: ${booking.customer.name}\nMechanic : ${booking.mechanic.name}'),
                 onTap: () {
                   // Navigate to booking details screen if needed
                 },

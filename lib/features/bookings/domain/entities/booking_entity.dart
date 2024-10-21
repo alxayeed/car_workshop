@@ -1,6 +1,7 @@
 import 'package:car_workshop/features/bookings/data/models/booking_model.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../../auth/domain/entities/user_entity.dart';
 import 'car_entity.dart';
 import 'customer_entity.dart';
 
@@ -11,7 +12,7 @@ class BookingEntity extends Equatable {
   final String title;
   final DateTime startDateTime;
   final DateTime endDateTime;
-  final String mechanicId;
+  final UserEntity mechanic;
 
   const BookingEntity({
     required this.id,
@@ -20,7 +21,7 @@ class BookingEntity extends Equatable {
     required this.title,
     required this.startDateTime,
     required this.endDateTime,
-    required this.mechanicId,
+    required this.mechanic, // Updated field
   });
 
   @override
@@ -31,7 +32,7 @@ class BookingEntity extends Equatable {
         title,
         startDateTime,
         endDateTime,
-        mechanicId,
+        mechanic,
       ];
 
   BookingModel toModel() {
@@ -42,7 +43,7 @@ class BookingEntity extends Equatable {
       title: title,
       startDateTime: startDateTime,
       endDateTime: endDateTime,
-      mechanicId: mechanicId,
+      mechanic: mechanic.toModel(), // Convert mechanic to UserModel
     );
   }
 
@@ -53,7 +54,7 @@ class BookingEntity extends Equatable {
     String? title,
     DateTime? startDateTime,
     DateTime? endDateTime,
-    String? mechanicId,
+    UserEntity? mechanic, // Updated field
   }) {
     return BookingEntity(
       id: id ?? this.id,
@@ -62,7 +63,7 @@ class BookingEntity extends Equatable {
       title: title ?? this.title,
       startDateTime: startDateTime ?? this.startDateTime,
       endDateTime: endDateTime ?? this.endDateTime,
-      mechanicId: mechanicId ?? this.mechanicId,
+      mechanic: mechanic ?? this.mechanic,
     );
   }
 }
