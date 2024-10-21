@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/routes/app_routes.dart';
 import '../../domain/entities/booking_entity.dart';
 import '../controllers/booking_controller.dart';
-import '../screens/add_booking_screen.dart'; // Import the AddBookingScreen
+import '../screens/add_booking_screen.dart';
+import '../widgets/booking_card.dart';
 
 class BookingsListScreen extends StatelessWidget {
   final BookingsController controller = Get.put(
@@ -43,13 +45,11 @@ class BookingsListScreen extends StatelessWidget {
             itemCount: controller.bookings.length,
             itemBuilder: (context, index) {
               BookingEntity booking = controller.bookings[index];
-              return ListTile(
-                title: Text(booking.title),
-                subtitle: Text(
-                    'Customer: ${booking.customer.name}\nMechanic : ${booking.mechanic.name}'),
+              return GestureDetector(
                 onTap: () {
-                  // Navigate to booking details screen if needed
+                  Get.toNamed(AppRoutes.bookingDetails, arguments: booking);
                 },
+                child: BookingCard(booking: booking),
               );
             },
           );
