@@ -1,15 +1,17 @@
+import 'package:car_workshop/features/bookings/presentation/screens/week_view_bookings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controllers/booking_controller.dart';
 import '../screens/add_booking_screen.dart';
 import '../screens/day_view_bookings_screen.dart';
-import '../screens/month_view_bookings_screen.dart';
-import '../screens/week_view_bookings_screen.dart';
+import 'month_view_bookings_screen.dart';
 
 class BookingsListScreen extends StatefulWidget {
   final BookingsController controller = Get.put(
     BookingsController(
+      Get.find(),
+      Get.find(),
       Get.find(),
       Get.find(),
     ),
@@ -54,8 +56,9 @@ class _BookingsListScreenState extends State<BookingsListScreen> {
         ),
         body: TabBarView(
           children: [
-            DayViewBookingsScreen(),
+            const DayViewBookingsScreen(),
             WeekViewBookingsScreen(),
+            // Container(),
             MonthViewBookingsScreen(),
           ],
         ),

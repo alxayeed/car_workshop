@@ -49,4 +49,20 @@ class BookingRepositoryImpl implements BookingRepository {
     return result.map((bookingModels) =>
         bookingModels.map((model) => model.toEntity()).toList());
   }
+
+  @override
+  Future<Either<Failure, List<BookingEntity>>> fetchBookingsForDay(
+      DateTime date) async {
+    final result = await remoteDataSource.getBookingsByDate(date);
+    return result.map((bookingModels) =>
+        bookingModels.map((model) => model.toEntity()).toList());
+  }
+
+  @override
+  Future<Either<Failure, List<BookingEntity>>> fetchBookingsInRange(
+      DateTime fromDate, DateTime toDate) async {
+    final result = await remoteDataSource.getBookingsInRange(fromDate, toDate);
+    return result.map((bookingModels) =>
+        bookingModels.map((model) => model.toEntity()).toList());
+  }
 }

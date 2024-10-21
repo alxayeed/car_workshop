@@ -6,7 +6,7 @@ import '../../domain/entities/booking_entity.dart';
 class BookingCard extends StatelessWidget {
   final BookingEntity booking;
 
-  const BookingCard({Key? key, required this.booking}) : super(key: key);
+  const BookingCard({super.key, required this.booking});
 
   @override
   Widget build(BuildContext context) {

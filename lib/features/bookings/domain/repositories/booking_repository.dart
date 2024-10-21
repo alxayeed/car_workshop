@@ -12,4 +12,10 @@ abstract class BookingRepository {
 
   Future<Either<Failure, List<BookingEntity>>> getBookingsByMechanic(
       String mechanicId);
+
+  Future<Either<Failure, List<BookingEntity>>> fetchBookingsForDay(
+      DateTime date);
+
+  Future<Either<Failure, List<BookingEntity>>> fetchBookingsInRange(
+      DateTime fromDate, DateTime toDate);
 }

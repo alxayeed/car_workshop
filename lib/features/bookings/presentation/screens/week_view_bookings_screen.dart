@@ -9,30 +9,25 @@ import '../widgets/booking_card.dart';
 // ignore: must_be_immutable
 class WeekViewBookingsScreen extends StatefulWidget {
   final BookingsController controller = Get.find();
-  DateTime selectedWeekStart = DateTime.now()
-      .subtract(Duration(days: DateTime.now().weekday - 1))
-      .toLocal();
+  DateTime selectedWeekStart =
+      DateTime.now().subtract(Duration(days: DateTime.now().weekday)).toLocal();
 
   WeekViewBookingsScreen({super.key});
 
   @override
-  _WeekViewBookingsScreenState createState() => _WeekViewBookingsScreenState();
+  State<WeekViewBookingsScreen> createState() => _WeekViewBookingsScreenState();
 }
 
 class _WeekViewBookingsScreenState extends State<WeekViewBookingsScreen> {
   DateTime get selectedWeekEnd =>
       widget.selectedWeekStart.add(const Duration(days: 6)).toLocal();
 
-  void _changeWeek(int delta) {
-    setState(() {
-      widget.selectedWeekStart = widget.selectedWeekStart
-          .add(Duration(days: 7 * delta))
-          .toLocal()
-          .copyWith(hour: 0, minute: 0, second: 0, millisecond: 0);
-    });
+  @override
+  void initState() {
+    super.initState();
     widget.controller.fetchBookingsForWeek(
-      widget.selectedWeekStart.subtract(const Duration(days: 1)),
-      selectedWeekEnd.subtract(const Duration(days: 1)),
+      widget.selectedWeekStart,
+      selectedWeekEnd,
     );
   }
 
@@ -81,28 +76,36 @@ class _WeekViewBookingsScreenState extends State<WeekViewBookingsScreen> {
               ),
             ),
             onDaySelected: (selectedDay, focusedDay) {
-              setState(() {
-                widget.selectedWeekStart = selectedDay
-                    .subtract(Duration(days: selectedDay.weekday - 1))
-                    .toLocal()
-                    .copyWith(hour: 0, minute: 0, second: 0, millisecond: 0);
-              });
-              widget.controller.fetchBookingsForWeek(
-                widget.selectedWeekStart.subtract(const Duration(days: 1)),
-                selectedWeekEnd.subtract(const Duration(days: 1)),
-              );
+              final newWeekStart = selectedDay
+                  .subtract(Duration(days: selectedDay.weekday - 1))
+                  .toLocal();
+
+              if (newWeekStart != widget.selectedWeekStart) {
+                setState(() {
+                  widget.selectedWeekStart = newWeekStart;
+                });
+
+                widget.controller.fetchBookingsForWeek(
+                  widget.selectedWeekStart,
+                  selectedWeekEnd,
+                );
+              }
             },
             onPageChanged: (focusedDay) {
-              setState(() {
-                widget.selectedWeekStart = focusedDay
-                    .subtract(Duration(days: focusedDay.weekday - 1))
-                    .toLocal()
-                    .copyWith(hour: 0, minute: 0, second: 0, millisecond: 0);
-              });
-              widget.controller.fetchBookingsForWeek(
-                widget.selectedWeekStart.subtract(const Duration(days: 1)),
-                selectedWeekEnd.subtract(const Duration(days: 1)),
-              );
+              final newWeekStart = focusedDay
+                  .subtract(Duration(days: focusedDay.weekday - 1))
+                  .toLocal();
+
+              if (newWeekStart != widget.selectedWeekStart) {
+                setState(() {
+                  widget.selectedWeekStart = newWeekStart;
+                });
+
+                widget.controller.fetchBookingsForWeek(
+                  widget.selectedWeekStart,
+                  selectedWeekEnd,
+                );
+              }
             },
           ),
         ],
@@ -113,10 +116,11 @@ class _WeekViewBookingsScreenState extends State<WeekViewBookingsScreen> {
   Widget _buildBookingsList() {
     return RefreshIndicator(
       onRefresh: () {
-        return widget.controller.loadBookings();
+        return widget.controller
+            .fetchBookingsForWeek(widget.selectedWeekStart, selectedWeekEnd);
       },
       child: Obx(() {
-        if (widget.controller.isLoading.value) {
+        if (widget.controller.isLoadingWeekly.value) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -124,20 +128,20 @@ class _WeekViewBookingsScreenState extends State<WeekViewBookingsScreen> {
           return Center(child: Text(widget.controller.errorMessage.value));
         }
 
-        if (widget.controller.bookings.isEmpty) {
+        if (widget.controller.weeklyBookings.isEmpty) {
           return const Center(child: Text('No bookings found.'));
         }
 
         return ListView.builder(
-          itemCount: widget.controller.bookings.length,
+          itemCount: widget.controller.weeklyBookings.length,
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
                 Get.toNamed(AppRoutes.bookingDetails,
-                    arguments: widget.controller.bookings[index]);
+                    arguments: widget.controller.weeklyBookings[index]);
               },
               child: BookingCard(
-                booking: widget.controller.bookings[index],
+                booking: widget.controller.weeklyBookings[index],
               ),
             );
           },

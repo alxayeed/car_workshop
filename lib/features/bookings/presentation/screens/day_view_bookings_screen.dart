@@ -17,20 +17,33 @@ class _DayViewBookingsScreenState extends State<DayViewBookingsScreen> {
   final BookingsController controller = Get.find();
   DateTime selectedDate = DateTime.now();
 
+  @override
+  void initState() {
+    super.initState();
+    controller
+        .fetchBookingsForDay(selectedDate); // Fetch daily bookings initially
+  }
+
   void _changeDate(int delta) {
     setState(() {
       selectedDate = selectedDate.add(Duration(days: delta));
     });
-    controller.fetchBookingsForDay(selectedDate);
+    controller.fetchBookingsForDay(
+        selectedDate); // Fetch daily bookings for the new selected date
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _buildDateSelector(),
-        Expanded(child: _buildBookingsList()),
-      ],
+    return Scaffold(
+      // appBar: AppBar(
+      //   title: const Text('Daily Bookings'),
+      // ),
+      body: Column(
+        children: [
+          _buildDateSelector(),
+          Expanded(child: _buildBookingsList()),
+        ],
+      ),
     );
   }
 
@@ -60,10 +73,10 @@ class _DayViewBookingsScreenState extends State<DayViewBookingsScreen> {
   Widget _buildBookingsList() {
     return RefreshIndicator(
       onRefresh: () {
-        return controller.loadBookings();
+        return controller.fetchBookingsForDay(selectedDate);
       },
       child: Obx(() {
-        if (controller.isLoading.value) {
+        if (controller.isLoadingDaily.value) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -71,20 +84,20 @@ class _DayViewBookingsScreenState extends State<DayViewBookingsScreen> {
           return Center(child: Text(controller.errorMessage.value));
         }
 
-        if (controller.bookings.isEmpty) {
-          return const Center(child: Text('No bookings found.'));
+        if (controller.dailyBookings.isEmpty) {
+          return const Center(child: Text('No bookings found for this day.'));
         }
 
         return ListView.builder(
-          itemCount: controller.bookings.length,
+          itemCount: controller.dailyBookings.length,
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
                 Get.toNamed(AppRoutes.bookingDetails,
-                    arguments: controller.bookings[index]);
+                    arguments: controller.dailyBookings[index]);
               },
               child: BookingCard(
-                booking: controller.bookings[index],
+                booking: controller.dailyBookings[index],
               ),
             );
           },

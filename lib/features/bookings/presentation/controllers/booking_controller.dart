@@ -9,74 +9,93 @@ import '../../../auth/data/models/user_model.dart';
 import '../../../auth/domain/entities/user_entity.dart';
 import '../../domain/entities/booking_entity.dart';
 import '../../domain/usecases/add_booking_use_case.dart';
-import '../../domain/usecases/fetch_bookings_use_case.dart';
+import '../../domain/usecases/fetch_daily_bookings_use_case.dart';
+import '../../domain/usecases/fetch_monthly_bookings_use_case.dart';
+import '../../domain/usecases/fetch_weekly_bookings_use_case.dart';
 
 class BookingsController extends GetxController {
-  final FetchBookingsUseCase fetchBookingsUseCase;
+  final FetchDailyBookingsUseCase fetchDailyBookingsUseCase;
+  final FetchWeeklyBookingsUseCase fetchWeeklyBookingsUseCase;
+  final FetchMonthlyBookingsUseCase fetchMonthlyBookingsUseCase;
   final AddBookingUseCase addBookingUseCase;
 
-  RxList<BookingEntity> bookings = <BookingEntity>[].obs;
+  // Separate lists for daily, weekly, and monthly bookings
+  RxList<BookingEntity> dailyBookings = <BookingEntity>[].obs;
+  RxList<BookingEntity> weeklyBookings = <BookingEntity>[].obs;
+  RxList<BookingEntity> monthlyBookings = <BookingEntity>[].obs;
+
   RxList<UserEntity> mechanics = <UserEntity>[].obs;
   RxString errorMessage = ''.obs;
-  RxBool isLoading = false.obs;
+
+  // Separate loading flags for daily, weekly, and monthly
+  RxBool isLoadingDaily = false.obs;
+  RxBool isLoadingWeekly = false.obs;
+  RxBool isLoadingMonthly = false.obs;
   RxBool isAddingBooking = false.obs;
 
-  BookingsController(this.fetchBookingsUseCase, this.addBookingUseCase);
+  BookingsController(
+    this.fetchDailyBookingsUseCase,
+    this.fetchWeeklyBookingsUseCase,
+    this.fetchMonthlyBookingsUseCase,
+    this.addBookingUseCase,
+  );
 
-  @override
-  void onInit() {
-    super.onInit();
-    loadBookings();
-  }
-
-  Future<void> loadBookings() async {
-    isLoading.value = true;
+  Future<void> fetchBookingsForDay(DateTime selectedDate) async {
+    isLoadingDaily.value = true;
 
     final Either<Failure, List<BookingEntity>> bookingsResult =
-        await fetchBookingsUseCase(null);
+        await fetchDailyBookingsUseCase(selectedDate);
 
     bookingsResult.fold(
       (failure) {
         errorMessage.value = failure.toString();
-        bookings.clear();
+        dailyBookings.clear();
       },
       (fetchedBookings) {
-        bookings.assignAll(fetchedBookings);
+        dailyBookings.assignAll(fetchedBookings);
       },
     );
 
-    saveMechanicsToCache();
-
-    isLoading.value = false;
-  }
-
-  Future<void> fetchBookingsForDay(DateTime selectedDate) async {
-    print('Fetching bookings for date: $selectedDate');
-    // return bookings;
+    isLoadingDaily.value = false;
   }
 
   Future<void> fetchBookingsForWeek(DateTime fromDate, DateTime toDate) async {
-    print('Fetching bookings from $fromDate to $toDate');
-    // return bookings;
+    isLoadingWeekly.value = true;
+
+    final Either<Failure, List<BookingEntity>> bookingsResult =
+        await fetchWeeklyBookingsUseCase(fromDate, toDate);
+
+    bookingsResult.fold(
+      (failure) {
+        errorMessage.value = failure.toString();
+        weeklyBookings.clear();
+      },
+      (fetchedBookings) {
+        weeklyBookings.assignAll(fetchedBookings);
+      },
+    );
+
+    isLoadingWeekly.value = false;
   }
 
   Future<void> fetchBookingsForMonth(
       DateTime startDate, DateTime endDate) async {
-    print('Fetching bookings from $startDate to $endDate');
-    // Implement the logic to fetch bookings from Firestore using the provided date range.
-  }
+    isLoadingMonthly.value = true;
 
-  void saveMechanicsToCache() {
-    final box = GetStorage();
-    final List<dynamic> storedMechanics = box.read('mechanics') ?? [];
+    final Either<Failure, List<BookingEntity>> bookingsResult =
+        await fetchMonthlyBookingsUseCase(startDate, endDate);
 
-    final List<UserEntity> mechanicEntities = storedMechanics
-        .map((mechanicJson) => UserModel.fromJson(mechanicJson).toEntity())
-        .toList();
+    bookingsResult.fold(
+      (failure) {
+        errorMessage.value = failure.toString();
+        monthlyBookings.clear();
+      },
+      (fetchedBookings) {
+        monthlyBookings.assignAll(fetchedBookings);
+      },
+    );
 
-    mechanics.clear();
-
-    mechanics.addAll(mechanicEntities);
+    isLoadingMonthly.value = false;
   }
 
   Future<void> addBooking(BookingEntity booking) async {
@@ -93,7 +112,7 @@ class BookingsController extends GetxController {
         );
       },
       (_) {
-        bookings.add(booking);
+        dailyBookings.add(booking); // Assuming daily booking update
         Get.snackbar(
           AppStrings.success,
           'Booking added.',
@@ -105,6 +124,18 @@ class BookingsController extends GetxController {
     );
 
     isAddingBooking.value = false;
+  }
+
+  void saveMechanicsToCache() {
+    final box = GetStorage();
+    final List<dynamic> storedMechanics = box.read('mechanics') ?? [];
+
+    final List<UserEntity> mechanicEntities = storedMechanics
+        .map((mechanicJson) => UserModel.fromJson(mechanicJson).toEntity())
+        .toList();
+
+    mechanics.clear();
+    mechanics.addAll(mechanicEntities);
   }
 
   void navigateToBookingsList() {

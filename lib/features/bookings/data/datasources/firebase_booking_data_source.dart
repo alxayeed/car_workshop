@@ -1,6 +1,7 @@
 import 'package:car_workshop/features/bookings/data/datasources/booking_remote_data_source.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/errors/failure.dart';
 import '../models/booking_model.dart';
@@ -59,6 +60,53 @@ class FirebaseBookingDataSource implements BookingRemoteDataSource {
         return BookingModel.fromJson(doc.data());
       }).toList();
       return Right(bookings);
+    } catch (error) {
+      return Left(ServerFailure(error.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<BookingModel>>> getBookingsByDate(
+      DateTime date) async {
+    try {
+      final dateStr = DateFormat('yyyy-MM-dd').format(date);
+
+      //TODO: Ok for now but need to update the logic
+
+      // Fetch all bookings first
+      final snapshot = await fireStore.collection('bookings').get();
+
+      final bookings = snapshot.docs.where((doc) {
+        final startDateTime = doc.data()['startDateTime'] as String;
+        return startDateTime.contains(dateStr);
+      }).map((doc) {
+        return BookingModel.fromJson(doc.data());
+      }).toList();
+
+      return Right(bookings);
+    } catch (error) {
+      return Left(ServerFailure(error.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<BookingModel>>> getBookingsInRange(
+      DateTime fromDate, DateTime toDate) async {
+    try {
+      final snapshot = await fireStore.collection('bookings').get();
+
+      final List<BookingModel> allBookings = snapshot.docs.map((doc) {
+        return BookingModel.fromJson(doc.data());
+      }).toList();
+
+      final filteredBookings = allBookings.where((booking) {
+        final startDateTime = booking.startDateTime;
+        return startDateTime
+                .isAfter(fromDate.subtract(const Duration(days: 1))) &&
+            startDateTime.isBefore(toDate.add(const Duration(days: 1)));
+      }).toList();
+
+      return Right(filteredBookings);
     } catch (error) {
       return Left(ServerFailure(error.toString()));
     }

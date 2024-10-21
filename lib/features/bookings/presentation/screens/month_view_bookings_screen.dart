@@ -30,13 +30,9 @@ class _MonthViewBookingsScreenState extends State<MonthViewBookingsScreen> {
     ).toLocal();
   }
 
-  void _changeMonth(int delta) {
-    setState(() {
-      widget.selectedMonthStart = DateTime(
-        widget.selectedMonthStart.year,
-        widget.selectedMonthStart.month + delta,
-      ).toLocal();
-    });
+  @override
+  void initState() {
+    super.initState();
     widget.controller.fetchBookingsForMonth(
       DateTime(
         widget.selectedMonthStart.year,
@@ -128,10 +124,11 @@ class _MonthViewBookingsScreenState extends State<MonthViewBookingsScreen> {
   Widget _buildBookingsList() {
     return RefreshIndicator(
       onRefresh: () {
-        return widget.controller.loadBookings();
+        return widget.controller
+            .fetchBookingsForMonth(widget.selectedMonthStart, selectedMonthEnd);
       },
       child: Obx(() {
-        if (widget.controller.isLoading.value) {
+        if (widget.controller.isLoadingMonthly.value) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -139,20 +136,20 @@ class _MonthViewBookingsScreenState extends State<MonthViewBookingsScreen> {
           return Center(child: Text(widget.controller.errorMessage.value));
         }
 
-        if (widget.controller.bookings.isEmpty) {
+        if (widget.controller.monthlyBookings.isEmpty) {
           return const Center(child: Text('No bookings found.'));
         }
 
         return ListView.builder(
-          itemCount: widget.controller.bookings.length,
+          itemCount: widget.controller.monthlyBookings.length,
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
                 Get.toNamed(AppRoutes.bookingDetails,
-                    arguments: widget.controller.bookings[index]);
+                    arguments: widget.controller.monthlyBookings[index]);
               },
               child: BookingCard(
-                booking: widget.controller.bookings[index],
+                booking: widget.controller.monthlyBookings[index],
               ),
             );
           },
