@@ -33,7 +33,7 @@ class MainApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: AppStrings.appTitle,
           theme: AppTheme.lightTheme,
-          initialRoute: AppRoutes.home,
+          initialRoute: AppRoutes.bookings,
           getPages: AppRoutes.routes,
         );
       },

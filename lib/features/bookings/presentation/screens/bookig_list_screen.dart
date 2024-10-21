@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../core/routes/app_routes.dart';
-import '../../domain/entities/booking_entity.dart';
 import '../controllers/booking_controller.dart';
 import '../screens/add_booking_screen.dart';
-import '../widgets/booking_card.dart';
+import '../screens/day_view_bookings_screen.dart';
+import '../screens/month_view_bookings_screen.dart';
+import '../screens/week_view_bookings_screen.dart';
 
-class BookingsListScreen extends StatelessWidget {
+class BookingsListScreen extends StatefulWidget {
   final BookingsController controller = Get.put(
     BookingsController(
       Get.find(),
@@ -18,49 +18,54 @@ class BookingsListScreen extends StatelessWidget {
   BookingsListScreen({super.key});
 
   @override
+  State<BookingsListScreen> createState() => _BookingsListScreenState();
+}
+
+class _BookingsListScreenState extends State<BookingsListScreen> {
+  int currentTabIndex = 0;
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   title: const Text('Bookings'),
-      // ),
-      body: RefreshIndicator(
-        onRefresh: () {
-          return controller.loadBookings();
-        },
-        child: Obx(() {
-          if (controller.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (controller.errorMessage.isNotEmpty) {
-            return Center(child: Text(controller.errorMessage.value));
-          }
-
-          if (controller.bookings.isEmpty) {
-            return const Center(child: Text('No bookings found.'));
-          }
-
-          return ListView.builder(
-            itemCount: controller.bookings.length,
-            itemBuilder: (context, index) {
-              BookingEntity booking = controller.bookings[index];
-              return GestureDetector(
-                onTap: () {
-                  Get.toNamed(AppRoutes.bookingDetails, arguments: booking);
-                },
-                child: BookingCard(booking: booking),
-              );
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text('Bookings'),
+          bottom: TabBar(
+            indicator: BoxDecoration(
+              color: Colors.teal,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            indicatorSize: TabBarIndicatorSize.tab,
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.black,
+            tabs: const [
+              Tab(text: 'Today'),
+              Tab(text: 'This Week'),
+              Tab(text: 'This Month'),
+            ],
+            onTap: (index) {
+              setState(() {
+                currentTabIndex = index;
+              });
             },
-          );
-        }),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Get.to(() => AddBookingScreen());
-        },
-        tooltip: 'Add Booking',
-        child: const Icon(Icons.add),
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            DayViewBookingsScreen(),
+            WeekViewBookingsScreen(),
+            MonthViewBookingsScreen(),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Get.to(() => AddBookingScreen());
+          },
+          tooltip: 'Add Booking',
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }

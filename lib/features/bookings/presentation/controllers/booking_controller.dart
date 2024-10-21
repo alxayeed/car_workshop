@@ -50,6 +50,22 @@ class BookingsController extends GetxController {
     isLoading.value = false;
   }
 
+  Future<void> fetchBookingsForDay(DateTime selectedDate) async {
+    print('Fetching bookings for date: $selectedDate');
+    // return bookings;
+  }
+
+  Future<void> fetchBookingsForWeek(DateTime fromDate, DateTime toDate) async {
+    print('Fetching bookings from $fromDate to $toDate');
+    // return bookings;
+  }
+
+  Future<void> fetchBookingsForMonth(
+      DateTime startDate, DateTime endDate) async {
+    print('Fetching bookings from $startDate to $endDate');
+    // Implement the logic to fetch bookings from Firestore using the provided date range.
+  }
+
   void saveMechanicsToCache() {
     final box = GetStorage();
     final List<dynamic> storedMechanics = box.read('mechanics') ?? [];
