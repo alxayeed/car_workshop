@@ -1,3 +1,4 @@
+import 'package:car_workshop/core/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -77,7 +78,15 @@ class _DayViewBookingsScreenState extends State<DayViewBookingsScreen> {
         return ListView.builder(
           itemCount: controller.bookings.length,
           itemBuilder: (context, index) {
-            return BookingCard(booking: controller.bookings[index]);
+            return GestureDetector(
+              onTap: () {
+                Get.toNamed(AppRoutes.bookingDetails,
+                    arguments: controller.bookings[index]);
+              },
+              child: BookingCard(
+                booking: controller.bookings[index],
+              ),
+            );
           },
         );
       }),

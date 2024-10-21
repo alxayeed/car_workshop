@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../../../core/routes/app_routes.dart';
 import '../controllers/booking_controller.dart';
 import '../widgets/booking_card.dart';
 
@@ -145,7 +146,15 @@ class _MonthViewBookingsScreenState extends State<MonthViewBookingsScreen> {
         return ListView.builder(
           itemCount: widget.controller.bookings.length,
           itemBuilder: (context, index) {
-            return BookingCard(booking: widget.controller.bookings[index]);
+            return GestureDetector(
+              onTap: () {
+                Get.toNamed(AppRoutes.bookingDetails,
+                    arguments: widget.controller.bookings[index]);
+              },
+              child: BookingCard(
+                booking: widget.controller.bookings[index],
+              ),
+            );
           },
         );
       }),
