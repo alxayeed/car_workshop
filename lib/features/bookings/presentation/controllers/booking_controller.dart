@@ -32,17 +32,6 @@ class BookingsController extends GetxController {
   Future<void> loadBookings() async {
     isLoading.value = true;
 
-    final box = GetStorage();
-    final List<dynamic> storedMechanics = box.read('mechanics') ?? [];
-
-    final List<UserEntity> mechanicEntities = storedMechanics
-        .map((mechanicJson) => UserModel.fromJson(mechanicJson).toEntity())
-        .toList();
-
-    mechanics.clear();
-
-    mechanics.addAll(mechanicEntities);
-
     final Either<Failure, List<BookingEntity>> bookingsResult =
         await fetchBookingsUseCase(null);
 
@@ -56,7 +45,22 @@ class BookingsController extends GetxController {
       },
     );
 
+    saveMechanicsToCache();
+
     isLoading.value = false;
+  }
+
+  void saveMechanicsToCache() {
+    final box = GetStorage();
+    final List<dynamic> storedMechanics = box.read('mechanics') ?? [];
+
+    final List<UserEntity> mechanicEntities = storedMechanics
+        .map((mechanicJson) => UserModel.fromJson(mechanicJson).toEntity())
+        .toList();
+
+    mechanics.clear();
+
+    mechanics.addAll(mechanicEntities);
   }
 
   Future<void> addBooking(BookingEntity booking) async {
