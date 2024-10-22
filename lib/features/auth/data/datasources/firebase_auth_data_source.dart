@@ -5,13 +5,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../../core/enums/user_role.dart';
 import '../../../../core/errors/failure.dart';
+import '../../../../core/services/auth_service.dart';
 import '../models/user_model.dart';
 
 class FirebaseAuthDataSource implements UserRemoteDataSource {
   final FirebaseAuth firebaseAuth;
   final FirebaseFirestore fireStore;
+  final AuthService authService;
 
-  FirebaseAuthDataSource(this.firebaseAuth, this.fireStore);
+  FirebaseAuthDataSource(this.firebaseAuth, this.fireStore, this.authService);
 
   @override
   Future<Either<Failure, UserModel>> registerUser(
@@ -24,12 +26,15 @@ class FirebaseAuthDataSource implements UserRemoteDataSource {
       );
 
       if (userCredential.user != null) {
-        return Right(UserModel(
+        final userModel = UserModel(
           id: userCredential.user!.uid,
           email: email,
           name: name,
           role: role,
-        ));
+        );
+
+        authService.setCurrentUser(userModel);
+        return Right(userModel);
       } else {
         return const Left(ServerFailure('User creation failed.'));
       }
@@ -59,6 +64,7 @@ class FirebaseAuthDataSource implements UserRemoteDataSource {
 
         if (userDoc.exists) {
           final userModel = UserModel.fromJson(userDoc.data()!);
+          authService.setCurrentUser(userModel);
           return Right(userModel);
         } else {
           return const Left(ServerFailure('User data not found.'));
@@ -78,6 +84,7 @@ class FirebaseAuthDataSource implements UserRemoteDataSource {
   Future<Either<Failure, void>> logoutUser() async {
     try {
       await firebaseAuth.signOut();
+      authService.clearCurrentUser();
       return const Right(null);
     } on FirebaseAuthException catch (e) {
       return Left(
@@ -95,7 +102,6 @@ class FirebaseAuthDataSource implements UserRemoteDataSource {
           .where('role', isEqualTo: UserRole.mechanic.name)
           .get();
 
-      // Map the documents to a list of UserModel
       List<UserModel> mechanics = querySnapshot.docs
           .map((doc) => UserModel.fromJson(doc.data() as Map<String, dynamic>))
           .toList();

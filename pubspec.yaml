@@ -16,6 +16,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_screenutil: ^5.9.3
+  font_awesome_flutter: ^10.7.0
   get: ^4.6.6
   get_it: ^8.0.0
   get_storage: ^2.1.1

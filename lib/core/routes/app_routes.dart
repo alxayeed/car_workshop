@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import '../../features/auth/presentation/screens/home_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/profile_screen.dart';
 import '../../features/bookings/presentation/screens/booking_details_screen.dart';
 
 class AppRoutes {
@@ -14,6 +15,7 @@ class AppRoutes {
   static const String bookings = '/bookings';
   static const String addBooking = '/addBooking';
   static const String bookingDetails = '/bookingDetails';
+  static const String profile = '/profile';
 
   static List<GetPage> routes = [
     GetPage(name: home, page: () => const HomeScreen()),
@@ -24,5 +26,6 @@ class AppRoutes {
         page: () => BookingDetailsScreen(booking: Get.arguments)),
     GetPage(name: login, page: () => const LoginScreen()),
     GetPage(name: register, page: () => const RegisterScreen()),
+    GetPage(name: profile, page: () => ProfileScreen()),
   ];
 }
