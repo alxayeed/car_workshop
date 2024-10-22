@@ -1,14 +1,16 @@
-// ignore_for_file: must_be_immutable
-
+import 'package:car_workshop/core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/common/widgets/widgets.dart';
 import '../../../auth/domain/entities/user_entity.dart';
 import '../../domain/entities/booking_entity.dart';
 import '../../domain/entities/car_entity.dart';
 import '../../domain/entities/customer_entity.dart';
 import '../controllers/booking_controller.dart';
 
+// ignore: must_be_immutable
 class AddBookingScreen extends StatelessWidget {
   final BookingsController bookingsController = Get.find<BookingsController>();
 
@@ -48,60 +50,66 @@ class AddBookingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Booking'),
+        title: const Text(AppStrings.addBooking),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Car Details', style: TextStyle(fontSize: 18)),
-            TextField(
+            Text(
+              AppStrings.carDetails,
+              style: TextStyle(fontSize: 28.sp),
+            ),
+            CustomTextField(
               controller: carMakeController,
-              decoration: const InputDecoration(labelText: 'Car Make'),
+              hintText: AppStrings.carMake,
             ),
-            TextField(
+            SizedBox(height: 10.h),
+            CustomTextField(
               controller: carModelController,
-              decoration: const InputDecoration(labelText: 'Car Model'),
+              hintText: AppStrings.carModel,
             ),
-            TextField(
+            SizedBox(height: 10.h),
+            CustomTextField(
               controller: carYearController,
+              hintText: AppStrings.carYear,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Car Year'),
             ),
-            TextField(
+            SizedBox(height: 10.h),
+            CustomTextField(
               controller: carRegistrationPlateController,
-              decoration:
-                  const InputDecoration(labelText: 'Registration Plate'),
+              hintText: AppStrings.registrationPlate,
             ),
-            const SizedBox(height: 20),
-            const Text('Customer Details', style: TextStyle(fontSize: 18)),
-            TextField(
+            SizedBox(height: 20.h),
+            Text(AppStrings.customerDetails, style: TextStyle(fontSize: 28.sp)),
+            CustomTextField(
               controller: customerNameController,
-              decoration: const InputDecoration(labelText: 'Customer Name'),
+              hintText: AppStrings.customerName,
             ),
-            TextField(
+            SizedBox(height: 10.h),
+            CustomTextField(
               controller: customerPhoneNumberController,
+              hintText: AppStrings.phoneNumber,
               keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(labelText: 'Phone Number'),
             ),
-            TextField(
+            SizedBox(height: 10.h),
+            CustomTextField(
               controller: customerEmailController,
+              hintText: AppStrings.email,
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(labelText: 'Email'),
             ),
-            const SizedBox(height: 20),
-            const Text('Booking Details', style: TextStyle(fontSize: 18)),
-            TextField(
+            SizedBox(height: 20.h),
+            Text(AppStrings.bookingDetails, style: TextStyle(fontSize: 28.sp)),
+            CustomTextField(
               controller: titleController,
-              decoration: const InputDecoration(labelText: 'Booking Title'),
+              hintText: AppStrings.bookingTitle,
             ),
-            const SizedBox(height: 20),
-            const Text('Assign Mechanic', style: TextStyle(fontSize: 18)),
-            Obx(() => DropdownButton<UserEntity>(
-                  hint: const Text('Select Mechanic'),
+            SizedBox(height: 20.h),
+            Obx(() => CustomDropdownButton<UserEntity>(
+                  labelText: AppStrings.assignMechanic,
+                  hint: AppStrings.selectMechanic,
                   value: selectedMechanic.value,
-                  isExpanded: true,
                   items: bookingsController.mechanics
                       .map(
                         (mechanic) => DropdownMenuItem<UserEntity>(
@@ -114,60 +122,63 @@ class AddBookingScreen extends StatelessWidget {
                     selectedMechanic.value = value;
                   },
                 )),
-            const SizedBox(height: 20),
-            TextField(
+            SizedBox(height: 20.h),
+            CustomTextField(
               controller: startDateTimeController,
+              hintText: AppStrings.startDate,
+              prefixIcon: Icons.calendar_today,
+              obscureText: false,
+              keyboardType: TextInputType.datetime,
               readOnly: true,
-              decoration: const InputDecoration(
-                labelText: 'Start Date',
-                suffixIcon: Icon(Icons.calendar_today),
-              ),
               onTap: () => _selectDate(context, startDateTimeController),
             ),
-            TextField(
+            SizedBox(height: 10.h),
+            CustomTextField(
               controller: endDateTimeController,
+              hintText: AppStrings.endDate,
+              prefixIcon: Icons.calendar_today,
+              obscureText: false,
+              keyboardType: TextInputType.datetime,
               readOnly: true,
-              decoration: const InputDecoration(
-                labelText: 'End Date',
-                suffixIcon: Icon(Icons.calendar_today),
-              ),
               onTap: () => _selectDate(context, endDateTimeController),
             ),
-            const SizedBox(height: 20),
-            Obx(() => bookingsController.isAddingBooking.value
-                ? const CircularProgressIndicator()
-                : ElevatedButton(
-                    onPressed: () {
-                      final int carYear = int.parse(carYearController.text);
+            SizedBox(height: 20.h),
+            Obx(() => CustomButton(
+                  labelText: bookingsController.isAddingBooking.value
+                      ? AppStrings.pleaseWait
+                      : AppStrings.addBooking,
+                  backgroundColor: Colors.blue, // Adjust color if needed
+                  foregroundColor: Colors.white,
+                  onPressed: () {
+                    final int carYear = int.parse(carYearController.text);
 
-                      final car = CarEntity(
-                        make: carMakeController.text,
-                        model: carModelController.text,
-                        year: carYear,
-                        registrationPlate: carRegistrationPlateController.text,
-                      );
+                    final car = CarEntity(
+                      make: carMakeController.text,
+                      model: carModelController.text,
+                      year: carYear,
+                      registrationPlate: carRegistrationPlateController.text,
+                    );
 
-                      final customer = CustomerEntity(
-                        name: customerNameController.text,
-                        phoneNumber: customerPhoneNumberController.text,
-                        email: customerEmailController.text,
-                      );
+                    final customer = CustomerEntity(
+                      name: customerNameController.text,
+                      phoneNumber: customerPhoneNumberController.text,
+                      email: customerEmailController.text,
+                    );
 
-                      final booking = BookingEntity(
-                        id: '',
-                        car: car,
-                        customer: customer,
-                        title: titleController.text,
-                        startDateTime:
-                            DateTime.parse(startDateTimeController.text),
-                        endDateTime: DateTime.parse(endDateTimeController.text),
-                        mechanic: selectedMechanic.value!,
-                      );
+                    final booking = BookingEntity(
+                      id: '',
+                      car: car,
+                      customer: customer,
+                      title: titleController.text,
+                      startDateTime:
+                          DateTime.parse(startDateTimeController.text),
+                      endDateTime: DateTime.parse(endDateTimeController.text),
+                      mechanic: selectedMechanic.value!,
+                    );
 
-                      bookingsController.addBooking(booking);
-                    },
-                    child: const Text('Add Booking'),
-                  )),
+                    bookingsController.addBooking(booking);
+                  },
+                )),
           ],
         ),
       ),

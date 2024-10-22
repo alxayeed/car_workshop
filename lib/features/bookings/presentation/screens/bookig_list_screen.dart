@@ -1,3 +1,4 @@
+import 'package:car_workshop/core/style/app_colors.dart';
 import 'package:car_workshop/features/bookings/presentation/screens/week_view_bookings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,6 +29,8 @@ class _BookingsListScreenState extends State<BookingsListScreen> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
           centerTitle: true,
           title: const Text('Bookings'),
           actions: [
@@ -66,11 +69,15 @@ class _BookingsListScreenState extends State<BookingsListScreen> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
+          backgroundColor: AppColors.primary,
           onPressed: () {
             Get.to(() => AddBookingScreen());
           },
           tooltip: 'Add Booking',
-          child: const Icon(Icons.add),
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
         ),
       ),
     );

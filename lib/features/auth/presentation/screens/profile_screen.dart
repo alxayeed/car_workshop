@@ -1,7 +1,12 @@
+import 'package:car_workshop/core/constants/app_strings.dart';
+import 'package:car_workshop/core/routes/app_routes.dart';
+import 'package:car_workshop/core/style/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/common/widgets/widgets.dart';
 import '../../../../core/services/auth_service.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -15,42 +20,46 @@ class ProfileScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        title: const Text(AppStrings.profile),
       ),
       body: user == null
-          ? const Center(child: Text('No user data available.'))
+          ? const Center(child: Text(AppStrings.noDataAvailable))
           : Center(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(16.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Colors.teal,
+                    CircleAvatar(
+                      radius: 100.r,
+                      backgroundColor: AppColors.primary,
                       child: Icon(
                         Icons.person,
-                        size: 50,
+                        size: 150.h,
                         color: Colors.white,
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    _buildDetailText('Name', user.name, FontAwesomeIcons.user),
-                    const Divider(thickness: 1),
+                    SizedBox(height: 16.h),
                     _buildDetailText(
-                        'Email', user.email, FontAwesomeIcons.envelope),
+                        AppStrings.name, user.name, FontAwesomeIcons.user),
                     const Divider(thickness: 1),
-                    _buildDetailText(
-                        'Role', user.role.name, FontAwesomeIcons.solidUser),
+                    _buildDetailText(AppStrings.email, user.email,
+                        FontAwesomeIcons.envelope),
+                    const Divider(thickness: 1),
+                    _buildDetailText(AppStrings.role, user.role.name,
+                        FontAwesomeIcons.solidUser),
                     const Spacer(),
-                    ElevatedButton(
+                    CustomButton(
+                      labelText: AppStrings.logout,
+                      backgroundColor: AppColors.errorBackground,
                       onPressed: () {
                         authService.clearCurrentUser();
-                        Get.offAllNamed('/login');
+                        Get.offAllNamed(AppRoutes.login);
                       },
-                      child: const Text('Logout'),
                     ),
-                    const SizedBox(height: 28),
+                    SizedBox(height: 28.h),
                   ],
                 ),
               ),
@@ -60,24 +69,29 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildDetailText(String title, String value, IconData icon) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      padding: EdgeInsets.symmetric(vertical: 12.h),
       child: Row(
         children: [
-          FaIcon(icon, color: Colors.grey[700]),
-          const SizedBox(width: 16.0),
+          FaIcon(icon, color: AppColors.iconColor),
+          SizedBox(width: 16.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 16),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22.sp,
+                  ),
                 ),
-                const SizedBox(height: 4.0),
+                SizedBox(height: 4.h),
                 Text(
                   value,
-                  style: const TextStyle(fontSize: 14, color: Colors.black87),
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    color: AppColors.textColor,
+                  ),
                 ),
               ],
             ),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/common/widgets/widgets.dart';
+import '../../../../core/style/app_colors.dart';
 import '../../domain/entities/booking_entity.dart';
 
 class BookingDetailsScreen extends StatelessWidget {
@@ -14,59 +17,133 @@ class BookingDetailsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
         title: Text(booking.title),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Car Details',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8.0),
-            Text('Make: ${booking.car.make}',
-                style: const TextStyle(fontSize: 16)),
-            Text('Model: ${booking.car.model}',
-                style: const TextStyle(fontSize: 16)),
-            Text('Year: ${booking.car.year}',
-                style: const TextStyle(fontSize: 16)),
-            Text('Registration Plate: ${booking.car.registrationPlate}',
-                style: const TextStyle(fontSize: 16)),
-            const SizedBox(height: 20),
-            const Text('Customer Details',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8.0),
-            Text('Name: ${booking.customer.name}',
-                style: const TextStyle(fontSize: 16)),
-            Text('Phone: ${booking.customer.phoneNumber}',
-                style: const TextStyle(fontSize: 16)),
-            Text('Email: ${booking.customer.email}',
-                style: const TextStyle(fontSize: 16)),
-            const SizedBox(height: 20),
-            const Text('Booking Details',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8.0),
-            Text('Title: ${booking.title}',
-                style: const TextStyle(fontSize: 16)),
-            Text(
-              'From: ${dateFormat.format(DateTime.parse(booking.startDateTime.toString()))}',
-              style: const TextStyle(fontSize: 16),
-            ),
-            Text(
-              'To: ${dateFormat.format(DateTime.parse(booking.endDateTime.toString()))}',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 20),
-            const Text('Assigned Mechanic',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8.0),
-            Text('Name: ${booking.mechanic.name}',
-                style: const TextStyle(fontSize: 16)),
-            Text('Email: ${booking.mechanic.email}',
-                style: const TextStyle(fontSize: 16)),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildSection(
+                title: 'Car Details',
+                children: [
+                  ShowInfoWidget(
+                    title: 'Make: ',
+                    value: booking.car.make,
+                    icon: Icons.directions_car,
+                  ),
+                  ShowInfoWidget(
+                    title: 'Model: ',
+                    value: booking.car.model,
+                    icon: Icons.car_repair,
+                  ),
+                  ShowInfoWidget(
+                    title: 'Year: ',
+                    value: booking.car.year.toString(),
+                    icon: Icons.calendar_today,
+                  ),
+                  ShowInfoWidget(
+                    title: 'Registration Plate: ',
+                    value: booking.car.registrationPlate,
+                    icon: Icons.confirmation_number,
+                  ),
+                ],
+              ),
+              buildDivider(),
+              buildSection(
+                title: 'Customer Details',
+                children: [
+                  ShowInfoWidget(
+                    title: 'Name: ',
+                    value: booking.customer.name,
+                    icon: Icons.person,
+                  ),
+                  ShowInfoWidget(
+                    title: 'Phone: ',
+                    value: booking.customer.phoneNumber,
+                    icon: Icons.phone,
+                  ),
+                  ShowInfoWidget(
+                    title: 'Email: ',
+                    value: booking.customer.email,
+                    icon: Icons.email,
+                  ),
+                ],
+              ),
+              buildDivider(),
+              buildSection(
+                title: 'Booking Details',
+                children: [
+                  ShowInfoWidget(
+                    title: 'Title: ',
+                    value: booking.title,
+                    icon: Icons.title,
+                  ),
+                  ShowInfoWidget(
+                    title: 'From: ',
+                    value: dateFormat.format(
+                        DateTime.parse(booking.startDateTime.toString())),
+                    icon: Icons.date_range,
+                  ),
+                  ShowInfoWidget(
+                    title: 'To: ',
+                    value: dateFormat
+                        .format(DateTime.parse(booking.endDateTime.toString())),
+                    icon: Icons.date_range,
+                  ),
+                ],
+              ),
+              buildDivider(),
+              buildSection(
+                title: 'Assigned Mechanic',
+                children: [
+                  ShowInfoWidget(
+                    title: 'Name: ',
+                    value: booking.mechanic.name,
+                    icon: Icons.person,
+                  ),
+                  ShowInfoWidget(
+                    title: 'Email: ',
+                    value: booking.mechanic.email,
+                    icon: Icons.email,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget buildSection({required String title, required List<Widget> children}) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 10.h),
+          ...children,
+        ],
+      ),
+    );
+  }
+
+  Widget buildDivider() {
+    return Divider(
+      height: 40.h,
+      thickness: 1,
+      color: Colors.grey.shade400,
     );
   }
 }
