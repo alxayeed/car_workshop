@@ -5,8 +5,10 @@ import 'package:get_storage/get_storage.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/errors/failure.dart';
 import '../../../../core/style/app_colors.dart';
+import '../../../../core/usecase/no_params.dart';
 import '../../../auth/data/models/user_model.dart';
 import '../../../auth/domain/entities/user_entity.dart';
+import '../../../auth/domain/usecases/get_all_mechanics_use_case.dart';
 import '../../domain/entities/booking_entity.dart';
 import '../../domain/usecases/add_booking_use_case.dart';
 import '../../domain/usecases/fetch_daily_bookings_use_case.dart';
@@ -18,6 +20,7 @@ class BookingsController extends GetxController {
   final FetchWeeklyBookingsUseCase fetchWeeklyBookingsUseCase;
   final FetchMonthlyBookingsUseCase fetchMonthlyBookingsUseCase;
   final AddBookingUseCase addBookingUseCase;
+  final GetAllMechanicsUseCase getAllMechanicsUseCase;
 
   // Separate lists for daily, weekly, and monthly bookings
   RxList<BookingEntity> dailyBookings = <BookingEntity>[].obs;
@@ -38,7 +41,24 @@ class BookingsController extends GetxController {
     this.fetchWeeklyBookingsUseCase,
     this.fetchMonthlyBookingsUseCase,
     this.addBookingUseCase,
+    this.getAllMechanicsUseCase,
   );
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchMechanics();
+  }
+
+  Future<void> fetchMechanics() async {
+    try {
+      await getAllMechanicsUseCase(NoParams()).then(
+        (value) => saveMechanicsToCache(),
+      );
+    } catch (e) {
+      errorMessage.value = e.toString();
+    } finally {}
+  }
 
   Future<void> fetchBookingsForDay(DateTime selectedDate) async {
     isLoadingDaily.value = true;
@@ -100,6 +120,7 @@ class BookingsController extends GetxController {
 
   Future<void> addBooking(BookingEntity booking) async {
     isAddingBooking.value = true;
+
     final Either<Failure, void> result = await addBookingUseCase(booking);
 
     result.fold(
@@ -119,7 +140,9 @@ class BookingsController extends GetxController {
           backgroundColor: AppColors.successBackground,
           duration: const Duration(seconds: 5),
         );
-        navigateToBookingsList();
+        Future.delayed(const Duration(milliseconds: 300), () {
+          navigateToBookingsList();
+        });
       },
     );
 

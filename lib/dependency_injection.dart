@@ -93,10 +93,10 @@ class DependencyInjection {
     ));
 
     Get.put<BookingsController>(BookingsController(
-      Get.find<FetchDailyBookingsUseCase>(),
-      Get.find<FetchWeeklyBookingsUseCase>(),
-      Get.find<FetchMonthlyBookingsUseCase>(),
-      Get.find<AddBookingUseCase>(),
-    ));
+        Get.find<FetchDailyBookingsUseCase>(),
+        Get.find<FetchWeeklyBookingsUseCase>(),
+        Get.find<FetchMonthlyBookingsUseCase>(),
+        Get.find<AddBookingUseCase>(),
+        Get.find<GetAllMechanicsUseCase>()));
   }
 }
