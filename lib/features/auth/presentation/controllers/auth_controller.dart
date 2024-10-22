@@ -1,5 +1,6 @@
 import 'package:car_workshop/core/style/app_colors.dart';
 import 'package:get/get.dart';
+
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/errors/failure.dart';
 import '../../../../core/routes/app_routes.dart';
@@ -26,7 +27,7 @@ class AuthController extends GetxController {
     isLoading.value = false;
 
     result.fold(
-          (Failure failure) {
+      (Failure failure) {
         failureMessage.value = failure.message;
         Get.snackbar(
           AppStrings.error,
@@ -34,7 +35,7 @@ class AuthController extends GetxController {
           backgroundColor: AppColors.errorBackground,
         );
       },
-          (_) {
+      (_) {
         Get.snackbar(
           AppStrings.success,
           AppStrings.registrationSuccess,
@@ -53,7 +54,7 @@ class AuthController extends GetxController {
     isLoading.value = false;
 
     result.fold(
-          (Failure failure) {
+      (Failure failure) {
         failureMessage.value = failure.message;
         Get.snackbar(
           AppStrings.error,
@@ -61,8 +62,8 @@ class AuthController extends GetxController {
           backgroundColor: AppColors.errorBackground,
         );
       },
-          (_) {
-        Get.offAllNamed(AppRoutes.home);
+      (_) {
+        Get.offAllNamed(AppRoutes.bookings);
       },
     );
   }
@@ -73,7 +74,7 @@ class AuthController extends GetxController {
     isLoading.value = false;
 
     result.fold(
-          (Failure failure) {
+      (Failure failure) {
         failureMessage.value = failure.message;
         Get.snackbar(
           AppStrings.error,
@@ -81,7 +82,7 @@ class AuthController extends GetxController {
           backgroundColor: AppColors.errorBackground,
         );
       },
-          (_) {
+      (_) {
         Get.offAllNamed(AppRoutes.login);
       },
     );

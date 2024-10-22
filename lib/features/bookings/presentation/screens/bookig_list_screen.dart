@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../controllers/booking_controller.dart';
 import '../screens/add_booking_screen.dart';
 import '../screens/day_view_bookings_screen.dart';
-import 'month_view_bookings_screen.dart';
+import '../screens/month_view_bookings_screen.dart';
 
 class BookingsListScreen extends StatefulWidget {
   final BookingsController controller = Get.put(
@@ -30,6 +30,14 @@ class _BookingsListScreenState extends State<BookingsListScreen> {
         appBar: AppBar(
           centerTitle: true,
           title: const Text('Bookings'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.person),
+              onPressed: () {
+                Get.toNamed('/profile');
+              },
+            ),
+          ],
           bottom: TabBar(
             indicator: BoxDecoration(
               color: Colors.teal,
@@ -54,7 +62,6 @@ class _BookingsListScreenState extends State<BookingsListScreen> {
           children: [
             const DayViewBookingsScreen(),
             WeekViewBookingsScreen(),
-            // Container(),
             MonthViewBookingsScreen(),
           ],
         ),

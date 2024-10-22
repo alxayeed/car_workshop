@@ -1,18 +1,20 @@
 import 'package:car_workshop/features/bookings/data/datasources/booking_remote_data_source.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
+import 'package:get/get.dart';
 
 import '../../../../core/errors/failure.dart';
+import '../../../../core/services/auth_service.dart';
 import '../models/booking_model.dart';
 
 class FirebaseBookingDataSource implements BookingRemoteDataSource {
   final FirebaseFirestore fireStore;
+  final AuthService authService = Get.find<AuthService>();
 
   FirebaseBookingDataSource(this.fireStore);
 
   @override
   Future<Either<Failure, void>> addBooking(BookingModel booking) async {
-    print(booking.toJson());
     try {
       await fireStore.collection('bookings').add(booking.toJson());
       return const Right(null);
@@ -54,7 +56,7 @@ class FirebaseBookingDataSource implements BookingRemoteDataSource {
     try {
       final snapshot = await fireStore
           .collection('bookings')
-          .where('mechanicId', isEqualTo: mechanicId)
+          .where('mechanic.id', isEqualTo: mechanicId)
           .get();
       final bookings = snapshot.docs.map((doc) {
         return BookingModel.fromJson(doc.data());
@@ -74,20 +76,32 @@ class FirebaseBookingDataSource implements BookingRemoteDataSource {
       final endOfDay = Timestamp.fromDate(
           DateTime(date.year, date.month, date.day, 23, 59, 59));
 
-      final snapshot = await fireStore
+      final user = authService.currentUser;
+
+      Query query = fireStore
           .collection('bookings')
           .where('startDateTime', isGreaterThanOrEqualTo: startOfDay)
-          .where('startDateTime', isLessThanOrEqualTo: endOfDay)
-          .get();
+          .where('startDateTime', isLessThanOrEqualTo: endOfDay);
 
-      // Map the documents to BookingModel
+      final snapshot = await query.get();
       final bookings = snapshot.docs.map((doc) {
-        return BookingModel.fromJson(doc.data());
+        return BookingModel.fromJson(doc.data() as Map<String, dynamic>);
       }).toList();
+
+      // TODO: implement composite query in firestore
+      // if (user?.role.name == 'mechanic') {
+      //   query = query.where('mechanic.id', isEqualTo: user?.id ?? "");
+      // }
+      if (user?.role.name == 'mechanic') {
+        final mechanicId = user?.id ?? "";
+        final filteredBookings = bookings
+            .where((booking) => booking.mechanic.id == mechanicId)
+            .toList();
+        return Right(filteredBookings);
+      }
 
       return Right(bookings);
     } catch (error) {
-      print(error.toString());
       return Left(ServerFailure(error.toString()));
     }
   }
@@ -108,15 +122,25 @@ class FirebaseBookingDataSource implements BookingRemoteDataSource {
         ),
       );
 
-      final snapshot = await fireStore
+      final user = authService.currentUser;
+
+      Query query = fireStore
           .collection('bookings')
           .where('startDateTime', isGreaterThanOrEqualTo: start)
-          .where('startDateTime', isLessThanOrEqualTo: end)
-          .get();
+          .where('startDateTime', isLessThanOrEqualTo: end);
 
+      final snapshot = await query.get();
       final bookings = snapshot.docs.map((doc) {
-        return BookingModel.fromJson(doc.data());
+        return BookingModel.fromJson(doc.data() as Map<String, dynamic>);
       }).toList();
+
+      if (user?.role.name == 'mechanic') {
+        final mechanicId = user?.id ?? "";
+        final filteredBookings = bookings
+            .where((booking) => booking.mechanic.id == mechanicId)
+            .toList();
+        return Right(filteredBookings);
+      }
 
       return Right(bookings);
     } catch (error) {

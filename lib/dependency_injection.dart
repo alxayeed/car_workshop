@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+import 'core/services/auth_service.dart';
 import 'features/auth/data/datasources/firebase_auth_data_source.dart';
 import 'features/auth/data/datasources/user_remote_datasource.dart';
 import 'features/auth/data/repositories/user_repository_impl.dart';
@@ -25,29 +26,25 @@ import 'features/bookings/presentation/controllers/booking_controller.dart';
 
 class DependencyInjection {
   static void initDependencies() {
-    // Firebase Services
     Get.put<FirebaseAuth>(FirebaseAuth.instance);
     Get.put<FirebaseFirestore>(FirebaseFirestore.instance);
-
-    // Register GetStorage
     Get.put<GetStorage>(GetStorage());
+    Get.put<AuthService>(AuthService(Get.find<GetStorage>()));
 
-    // Data Sources
     Get.put<UserRemoteDataSource>(FirebaseAuthDataSource(
       Get.find<FirebaseAuth>(),
       Get.find<FirebaseFirestore>(),
+      Get.find<AuthService>(),
     ));
     Get.put<BookingRemoteDataSource>(FirebaseBookingDataSource(
       Get.find<FirebaseFirestore>(),
     ));
 
-    // Repositories
     Get.put<UserRepository>(
         UserRepositoryImpl(Get.find<UserRemoteDataSource>()));
     Get.put<BookingRepository>(
         BookingRepositoryImpl(Get.find<BookingRemoteDataSource>()));
 
-    // Use Cases
     Get.put<CreateUserUseCase>(CreateUserUseCase(Get.find<UserRepository>()));
     Get.put<RegisterUserUseCase>(RegisterUserUseCase(
       Get.find<UserRepository>(),
@@ -66,7 +63,6 @@ class DependencyInjection {
     Get.put<GetAllMechanicsUseCase>(GetAllMechanicsUseCase(
         Get.find<UserRepository>(), Get.find<GetStorage>()));
 
-    // Booking Use Cases
     Get.put<FetchDailyBookingsUseCase>(
       FetchDailyBookingsUseCase(
         Get.find<BookingRepository>(),
@@ -85,7 +81,6 @@ class DependencyInjection {
     Get.put<AddBookingUseCase>(
         AddBookingUseCase(Get.find<BookingRepository>()));
 
-    // Controllers
     Get.put<AuthController>(AuthController(
       Get.find<RegisterUserUseCase>(),
       Get.find<LoginUserUseCase>(),

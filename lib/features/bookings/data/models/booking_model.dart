@@ -24,9 +24,7 @@ class BookingModel extends BookingEntity {
           CustomerModel.fromJson(json['customer'] as Map<String, dynamic>),
       title: json['title'] as String,
       startDateTime: (json['startDateTime'] as Timestamp).toDate(),
-      // Convert Firestore Timestamp to DateTime
       endDateTime: (json['endDateTime'] as Timestamp).toDate(),
-      // Convert Firestore Timestamp to DateTime
       mechanic: UserModel.fromJson(json['mechanic'] as Map<String, dynamic>),
     );
   }
@@ -38,9 +36,7 @@ class BookingModel extends BookingEntity {
       'customer': (customer as CustomerModel).toJson(),
       'title': title,
       'startDateTime': Timestamp.fromDate(startDateTime),
-      // Convert DateTime to Firestore Timestamp
       'endDateTime': Timestamp.fromDate(endDateTime),
-      // Convert DateTime to Firestore Timestamp
       'mechanic': (mechanic as UserModel).toJson(),
     };
   }

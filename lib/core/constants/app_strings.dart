@@ -14,4 +14,7 @@ class AppStrings {
   static const String signUpLink = 'Register Now';
   static const String alreadyRegistered = 'Already registered? ';
   static const String loginLink = 'Login';
+
+  //Get Storage
+  static const String loggedUser = 'logged_user';
 }
