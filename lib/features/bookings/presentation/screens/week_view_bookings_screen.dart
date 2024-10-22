@@ -10,7 +10,7 @@ import '../widgets/booking_card.dart';
 class WeekViewBookingsScreen extends StatefulWidget {
   final BookingsController controller = Get.find();
   DateTime selectedWeekStart =
-      DateTime.now().subtract(Duration(days: DateTime.now().weekday)).toLocal();
+      DateTime.now().subtract(Duration(days: DateTime.now().weekday));
 
   WeekViewBookingsScreen({super.key});
 
@@ -20,7 +20,7 @@ class WeekViewBookingsScreen extends StatefulWidget {
 
 class _WeekViewBookingsScreenState extends State<WeekViewBookingsScreen> {
   DateTime get selectedWeekEnd =>
-      widget.selectedWeekStart.add(const Duration(days: 6)).toLocal();
+      widget.selectedWeekStart.add(const Duration(days: 6));
 
   @override
   void initState() {
@@ -61,7 +61,10 @@ class _WeekViewBookingsScreenState extends State<WeekViewBookingsScreen> {
             firstDay: DateTime.now().subtract(const Duration(days: 365)),
             lastDay: DateTime.now().add(const Duration(days: 365)),
             calendarFormat: CalendarFormat.week,
-            headerStyle: const HeaderStyle(formatButtonVisible: false),
+            headerStyle: const HeaderStyle(
+              formatButtonVisible: false,
+              titleCentered: true,
+            ),
             daysOfWeekStyle: const DaysOfWeekStyle(
               weekdayStyle: TextStyle(fontWeight: FontWeight.bold),
             ),
@@ -86,20 +89,17 @@ class _WeekViewBookingsScreenState extends State<WeekViewBookingsScreen> {
                 });
 
                 widget.controller.fetchBookingsForWeek(
-                  widget.selectedWeekStart,
+                  widget.selectedWeekStart.toLocal(),
                   selectedWeekEnd,
                 );
               }
             },
             onPageChanged: (focusedDay) {
-              final newWeekStart = focusedDay
-                  .subtract(Duration(days: focusedDay.weekday - 1))
-                  .toLocal();
+              final newWeekStart =
+                  focusedDay.subtract(Duration(days: focusedDay.weekday - 7));
 
               if (newWeekStart != widget.selectedWeekStart) {
-                setState(() {
-                  widget.selectedWeekStart = newWeekStart;
-                });
+                widget.selectedWeekStart = newWeekStart;
 
                 widget.controller.fetchBookingsForWeek(
                   widget.selectedWeekStart,

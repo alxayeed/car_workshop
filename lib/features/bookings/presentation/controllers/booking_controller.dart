@@ -1,3 +1,4 @@
+import 'package:car_workshop/core/routes/app_routes.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -81,9 +82,24 @@ class BookingsController extends GetxController {
 
   Future<void> fetchBookingsForWeek(DateTime fromDate, DateTime toDate) async {
     isLoadingWeekly.value = true;
+    DateTime modifiedFromDate = fromDate.toLocal().copyWith(
+          hour: 0,
+          minute: 0,
+          second: 0,
+          millisecond: 0,
+          microsecond: 0,
+        );
+
+    DateTime modifiedToDate = toDate.toLocal().copyWith(
+          hour: 0,
+          minute: 0,
+          second: 0,
+          millisecond: 0,
+          microsecond: 0,
+        );
 
     final Either<Failure, List<BookingEntity>> bookingsResult =
-        await fetchWeeklyBookingsUseCase(fromDate, toDate);
+        await fetchWeeklyBookingsUseCase(modifiedFromDate, modifiedToDate);
 
     bookingsResult.fold(
       (failure) {
@@ -162,6 +178,6 @@ class BookingsController extends GetxController {
   }
 
   void navigateToBookingsList() {
-    Get.offAllNamed('/bookings');
+    Get.offAllNamed(AppRoutes.bookings);
   }
 }
