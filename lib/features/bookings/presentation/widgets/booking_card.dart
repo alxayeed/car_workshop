@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/common/widgets/widgets.dart';
 import '../../domain/entities/booking_entity.dart';
 
 class BookingCard extends StatelessWidget {
@@ -13,34 +15,37 @@ class BookingCard extends StatelessWidget {
     final DateFormat dateFormat = DateFormat('dd MMMM, yyyy');
 
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+      margin: EdgeInsets.symmetric(vertical: 10.h, horizontal: 18.w),
       elevation: 2,
       color: Colors.teal.shade50,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(16.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               booking.title,
-              style: const TextStyle(
-                fontSize: 16,
+              style: TextStyle(
+                fontSize: 24.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 4.0),
-            Text(
-              'Customer: ${booking.customer.name}',
-              style: const TextStyle(fontSize: 14),
+            SizedBox(height: 8.h),
+            ShowInfoWidget(
+              title: 'Customer: ',
+              value: booking.customer.name,
+              icon: Icons.person,
             ),
-            Text(
-              'Mechanic: ${booking.mechanic.name}',
-              style: const TextStyle(fontSize: 14),
+            ShowInfoWidget(
+              title: 'Mechanic: ',
+              value: booking.mechanic.name,
+              icon: Icons.build,
             ),
-            const SizedBox(height: 4.0),
-            Text(
-              'From: ${dateFormat.format(DateTime.parse(booking.startDateTime.toString()))}',
-              style: const TextStyle(fontSize: 12),
+            ShowInfoWidget(
+              title: 'From: ',
+              value: dateFormat
+                  .format(DateTime.parse(booking.startDateTime.toString())),
+              icon: Icons.date_range,
             ),
           ],
         ),

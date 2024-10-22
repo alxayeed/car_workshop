@@ -29,6 +29,8 @@ class _BookingsListScreenState extends State<BookingsListScreen> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
           centerTitle: true,
           title: const Text('Bookings'),
           actions: [

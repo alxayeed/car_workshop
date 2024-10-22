@@ -1,4 +1,5 @@
 import 'package:car_workshop/core/constants/app_strings.dart';
+import 'package:car_workshop/core/routes/app_routes.dart';
 import 'package:car_workshop/core/style/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,6 +20,8 @@ class ProfileScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
         title: const Text(AppStrings.profile),
       ),
       body: user == null
@@ -50,9 +53,10 @@ class ProfileScreen extends StatelessWidget {
                     const Spacer(),
                     CustomButton(
                       labelText: AppStrings.logout,
+                      backgroundColor: AppColors.errorBackground,
                       onPressed: () {
                         authService.clearCurrentUser();
-                        Get.offAllNamed('/login');
+                        Get.offAllNamed(AppRoutes.login);
                       },
                     ),
                     SizedBox(height: 28.h),
