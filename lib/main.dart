@@ -37,7 +37,7 @@ class MainApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: AppStrings.appTitle,
           theme: AppTheme.lightTheme,
-          initialRoute: AppRoutes.login,
+          initialRoute: AppRoutes.bookings,
           getPages: AppRoutes.routes,
         );
       },

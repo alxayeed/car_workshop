@@ -71,7 +71,10 @@ class _MonthViewBookingsScreenState extends State<MonthViewBookingsScreen> {
         firstDay: DateTime.now().subtract(const Duration(days: 365)),
         lastDay: DateTime.now().add(const Duration(days: 365)),
         calendarFormat: CalendarFormat.month,
-        headerStyle: const HeaderStyle(formatButtonVisible: false),
+        headerStyle: const HeaderStyle(
+          formatButtonVisible: false,
+          titleCentered: true,
+        ),
         daysOfWeekStyle: const DaysOfWeekStyle(
           weekdayStyle: TextStyle(fontWeight: FontWeight.bold),
         ),
