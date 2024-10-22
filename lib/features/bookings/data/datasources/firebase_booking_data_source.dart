@@ -1,7 +1,6 @@
 import 'package:car_workshop/features/bookings/data/datasources/booking_remote_data_source.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../core/errors/failure.dart';
 import '../models/booking_model.dart';
@@ -13,6 +12,7 @@ class FirebaseBookingDataSource implements BookingRemoteDataSource {
 
   @override
   Future<Either<Failure, void>> addBooking(BookingModel booking) async {
+    print(booking.toJson());
     try {
       await fireStore.collection('bookings').add(booking.toJson());
       return const Right(null);
@@ -69,22 +69,25 @@ class FirebaseBookingDataSource implements BookingRemoteDataSource {
   Future<Either<Failure, List<BookingModel>>> getBookingsByDate(
       DateTime date) async {
     try {
-      final dateStr = DateFormat('yyyy-MM-dd').format(date);
+      final startOfDay =
+          Timestamp.fromDate(DateTime(date.year, date.month, date.day));
+      final endOfDay = Timestamp.fromDate(
+          DateTime(date.year, date.month, date.day, 23, 59, 59));
 
-      //TODO: Ok for now but need to update the logic
+      final snapshot = await fireStore
+          .collection('bookings')
+          .where('startDateTime', isGreaterThanOrEqualTo: startOfDay)
+          .where('startDateTime', isLessThanOrEqualTo: endOfDay)
+          .get();
 
-      // Fetch all bookings first
-      final snapshot = await fireStore.collection('bookings').get();
-
-      final bookings = snapshot.docs.where((doc) {
-        final startDateTime = doc.data()['startDateTime'] as String;
-        return startDateTime.contains(dateStr);
-      }).map((doc) {
+      // Map the documents to BookingModel
+      final bookings = snapshot.docs.map((doc) {
         return BookingModel.fromJson(doc.data());
       }).toList();
 
       return Right(bookings);
     } catch (error) {
+      print(error.toString());
       return Left(ServerFailure(error.toString()));
     }
   }
@@ -93,20 +96,29 @@ class FirebaseBookingDataSource implements BookingRemoteDataSource {
   Future<Either<Failure, List<BookingModel>>> getBookingsInRange(
       DateTime fromDate, DateTime toDate) async {
     try {
-      final snapshot = await fireStore.collection('bookings').get();
+      final start = Timestamp.fromDate(fromDate);
+      final end = Timestamp.fromDate(
+        DateTime(
+          toDate.year,
+          toDate.month,
+          toDate.day,
+          23,
+          59,
+          59,
+        ),
+      );
 
-      final List<BookingModel> allBookings = snapshot.docs.map((doc) {
+      final snapshot = await fireStore
+          .collection('bookings')
+          .where('startDateTime', isGreaterThanOrEqualTo: start)
+          .where('startDateTime', isLessThanOrEqualTo: end)
+          .get();
+
+      final bookings = snapshot.docs.map((doc) {
         return BookingModel.fromJson(doc.data());
       }).toList();
 
-      final filteredBookings = allBookings.where((booking) {
-        final startDateTime = booking.startDateTime;
-        return startDateTime
-                .isAfter(fromDate.subtract(const Duration(days: 1))) &&
-            startDateTime.isBefore(toDate.add(const Duration(days: 1)));
-      }).toList();
-
-      return Right(filteredBookings);
+      return Right(bookings);
     } catch (error) {
       return Left(ServerFailure(error.toString()));
     }

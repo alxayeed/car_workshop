@@ -10,11 +10,7 @@ import 'month_view_bookings_screen.dart';
 class BookingsListScreen extends StatefulWidget {
   final BookingsController controller = Get.put(
     BookingsController(
-      Get.find(),
-      Get.find(),
-      Get.find(),
-      Get.find(),
-    ),
+        Get.find(), Get.find(), Get.find(), Get.find(), Get.find()),
   );
 
   BookingsListScreen({super.key});

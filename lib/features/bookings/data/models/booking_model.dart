@@ -1,4 +1,5 @@
 import 'package:car_workshop/features/bookings/domain/entities/booking_entity.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore Timestamp
 
 import '../../../auth/data/models/user_model.dart';
 import 'car_model.dart';
@@ -22,8 +23,10 @@ class BookingModel extends BookingEntity {
       customer:
           CustomerModel.fromJson(json['customer'] as Map<String, dynamic>),
       title: json['title'] as String,
-      startDateTime: DateTime.parse(json['startDateTime'] as String),
-      endDateTime: DateTime.parse(json['endDateTime'] as String),
+      startDateTime: (json['startDateTime'] as Timestamp).toDate(),
+      // Convert Firestore Timestamp to DateTime
+      endDateTime: (json['endDateTime'] as Timestamp).toDate(),
+      // Convert Firestore Timestamp to DateTime
       mechanic: UserModel.fromJson(json['mechanic'] as Map<String, dynamic>),
     );
   }
@@ -34,8 +37,10 @@ class BookingModel extends BookingEntity {
       'car': (car as CarModel).toJson(),
       'customer': (customer as CustomerModel).toJson(),
       'title': title,
-      'startDateTime': startDateTime.toIso8601String(),
-      'endDateTime': endDateTime.toIso8601String(),
+      'startDateTime': Timestamp.fromDate(startDateTime),
+      // Convert DateTime to Firestore Timestamp
+      'endDateTime': Timestamp.fromDate(endDateTime),
+      // Convert DateTime to Firestore Timestamp
       'mechanic': (mechanic as UserModel).toJson(),
     };
   }
