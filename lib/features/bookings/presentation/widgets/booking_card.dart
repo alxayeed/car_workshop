@@ -15,6 +15,7 @@ class BookingCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
       elevation: 2,
+      color: Colors.teal.shade50,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -39,7 +40,7 @@ class BookingCard extends StatelessWidget {
             const SizedBox(height: 4.0),
             Text(
               'From: ${dateFormat.format(DateTime.parse(booking.startDateTime.toString()))}',
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+              style: const TextStyle(fontSize: 12),
             ),
           ],
         ),

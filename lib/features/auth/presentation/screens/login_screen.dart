@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+
+import '../../../../core/common/widgets/widgets.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/routes/app_routes.dart';
-import '../../../../core/style/app_fonts.dart'; // Import AppFonts
-import '../widgets/custom_text_field.dart';
-import '../widgets/redirection_button.dart';
+import '../../../../core/style/app_fonts.dart';
 import '../../presentation/controllers/auth_controller.dart';
+import '../widgets/redirection_button.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -24,51 +25,44 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 100.h),
-              // Title
+              SizedBox(height: 250.h),
               Text(
                 AppStrings.login,
                 style: AppFonts.size32W700,
               ),
               SizedBox(height: 20.h),
-
-              // Email TextField
               CustomTextField(
                 controller: emailController,
-                labelText: AppStrings.email,
+                hintText: AppStrings.email,
                 keyboardType: TextInputType.emailAddress,
                 prefixIcon: Icons.email,
               ),
-
-              // Password TextField
+              SizedBox(height: 10.h),
               CustomTextField(
                 controller: passwordController,
-                labelText: AppStrings.password,
+                hintText: AppStrings.password,
                 obscureText: true,
                 prefixIcon: Icons.lock,
               ),
-
               SizedBox(height: 20.h),
-
-              // Login Button
-              Obx(() {
-                return ElevatedButton(
-                  onPressed: authController.isLoading.value
-                      ? null
-                      : () {
-                    final String email = emailController.text.trim();
-                    final String password = passwordController.text.trim();
-                    authController.login(email, password);
-                  },
-                  child: Text(authController.isLoading.value
-                      ? AppStrings.pleaseWait
-                      : AppStrings.login),
-                );
-              }),
-
-              SizedBox(height: 10.h),
-
-              // Redirection Button to Register Screen
+              Obx(
+                () {
+                  return CustomButton(
+                    labelText: authController.isLoading.value
+                        ? AppStrings.pleaseWait
+                        : AppStrings.login,
+                    onPressed: authController.isLoading.value
+                        ? null
+                        : () {
+                            final String email = emailController.text.trim();
+                            final String password =
+                                passwordController.text.trim();
+                            authController.login(email, password);
+                          },
+                  );
+                },
+              ),
+              SizedBox(height: 30.h),
               const RedirectionButton(
                 regularText: AppStrings.noAccount,
                 linkText: AppStrings.signUpLink,
