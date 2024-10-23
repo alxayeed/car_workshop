@@ -1,5 +1,7 @@
+import 'package:car_workshop/core/common/widgets/custom_loader.dart';
 import 'package:car_workshop/core/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -20,24 +22,19 @@ class _DayViewBookingsScreenState extends State<DayViewBookingsScreen> {
   @override
   void initState() {
     super.initState();
-    controller
-        .fetchBookingsForDay(selectedDate); // Fetch daily bookings initially
+    controller.fetchBookingsForDay(selectedDate);
   }
 
   void _changeDate(int delta) {
     setState(() {
       selectedDate = selectedDate.add(Duration(days: delta));
     });
-    controller.fetchBookingsForDay(
-        selectedDate); // Fetch daily bookings for the new selected date
+    controller.fetchBookingsForDay(selectedDate);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Daily Bookings'),
-      // ),
       body: Column(
         children: [
           _buildDateSelector(),
@@ -77,7 +74,7 @@ class _DayViewBookingsScreenState extends State<DayViewBookingsScreen> {
       },
       child: Obx(() {
         if (controller.isLoadingDaily.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const CustomLoader();
         }
 
         if (controller.errorMessage.isNotEmpty) {
@@ -85,7 +82,10 @@ class _DayViewBookingsScreenState extends State<DayViewBookingsScreen> {
         }
 
         if (controller.dailyBookings.isEmpty) {
-          return const Center(child: Text('No bookings found for this day.'));
+          return Image.asset(
+            "assets/img/no_data.jpg",
+            height: 400.h,
+          );
         }
 
         return ListView.builder(

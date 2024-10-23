@@ -1,6 +1,9 @@
+import 'package:car_workshop/core/constants/app_strings.dart';
+import 'package:car_workshop/core/routes/app_routes.dart';
 import 'package:car_workshop/core/style/app_colors.dart';
 import 'package:car_workshop/features/bookings/presentation/screens/week_view_bookings_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../controllers/booking_controller.dart';
@@ -32,27 +35,51 @@ class _BookingsListScreenState extends State<BookingsListScreen> {
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           centerTitle: true,
-          title: const Text('Bookings'),
+          title: Text(
+            AppStrings.appTitle,
+            style: TextStyle(fontSize: 34.sp),
+          ),
           actions: [
             IconButton(
-              icon: const Icon(Icons.person),
+              icon: Icon(
+                Icons.person,
+                size: 36.sp,
+              ),
               onPressed: () {
-                Get.toNamed('/profile');
+                Get.toNamed(AppRoutes.profile);
               },
             ),
           ],
           bottom: TabBar(
             indicator: BoxDecoration(
-              color: Colors.teal,
-              borderRadius: BorderRadius.circular(8),
+              color: Colors.teal.shade50,
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(8),
+                topLeft: Radius.circular(8),
+              ),
             ),
             indicatorSize: TabBarIndicatorSize.tab,
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.black,
-            tabs: const [
-              Tab(text: 'Today'),
-              Tab(text: 'This Week'),
-              Tab(text: 'This Month'),
+            labelColor: Colors.black,
+            unselectedLabelColor: Colors.white,
+            tabs: [
+              Tab(
+                child: Text(
+                  "Today",
+                  style: TextStyle(fontSize: 24.sp),
+                ),
+              ),
+              Tab(
+                child: Text(
+                  "This Week",
+                  style: TextStyle(fontSize: 24.sp),
+                ),
+              ),
+              Tab(
+                child: Text(
+                  "This Month",
+                  style: TextStyle(fontSize: 24.sp),
+                ),
+              ),
             ],
             onTap: (index) {
               setState(() {

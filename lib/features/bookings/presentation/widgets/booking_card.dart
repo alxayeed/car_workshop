@@ -26,7 +26,7 @@ class BookingCard extends StatelessWidget {
             Text(
               booking.title,
               style: TextStyle(
-                fontSize: 24.sp,
+                fontSize: 28.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),

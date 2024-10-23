@@ -1,9 +1,9 @@
-import 'package:car_workshop/core/style/app_colors.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/errors/failure.dart';
 import '../../../../core/routes/app_routes.dart';
+import '../../../../core/services/snackbar_service.dart';
 import '../../../../core/usecase/no_params.dart';
 import '../../domain/usecases/login_use_case.dart';
 import '../../domain/usecases/logout_use_case.dart';
@@ -29,19 +29,10 @@ class AuthController extends GetxController {
     result.fold(
       (Failure failure) {
         failureMessage.value = failure.message;
-        Get.snackbar(
-          AppStrings.error,
-          failureMessage.value,
-          backgroundColor: AppColors.errorBackground,
-        );
+        SnackbarService.showErrorMessage(failure.message);
       },
       (_) {
-        Get.snackbar(
-          AppStrings.success,
-          AppStrings.registrationSuccess,
-          backgroundColor: AppColors.successBackground,
-          duration: const Duration(seconds: 5),
-        );
+        SnackbarService.showSuccessMessage(AppStrings.registrationSuccess);
         Get.offAllNamed(AppRoutes.login);
       },
     );
@@ -56,11 +47,7 @@ class AuthController extends GetxController {
     result.fold(
       (Failure failure) {
         failureMessage.value = failure.message;
-        Get.snackbar(
-          AppStrings.error,
-          failureMessage.value,
-          backgroundColor: AppColors.errorBackground,
-        );
+        SnackbarService.showErrorMessage(failure.message);
       },
       (_) {
         Get.offAllNamed(AppRoutes.bookings);
@@ -76,11 +63,7 @@ class AuthController extends GetxController {
     result.fold(
       (Failure failure) {
         failureMessage.value = failure.message;
-        Get.snackbar(
-          AppStrings.error,
-          failureMessage.value,
-          backgroundColor: AppColors.errorBackground,
-        );
+        SnackbarService.showErrorMessage(failure.message);
       },
       (_) {
         Get.offAllNamed(AppRoutes.login);

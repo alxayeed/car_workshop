@@ -128,7 +128,7 @@ class BookingDetailsScreen extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              fontSize: 20.sp,
+              fontSize: 30.sp,
               fontWeight: FontWeight.bold,
             ),
           ),

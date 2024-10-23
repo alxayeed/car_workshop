@@ -5,7 +5,7 @@ import 'package:get_storage/get_storage.dart';
 
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/errors/failure.dart';
-import '../../../../core/style/app_colors.dart';
+import '../../../../core/services/services.dart';
 import '../../../../core/usecase/no_params.dart';
 import '../../../auth/data/models/user_model.dart';
 import '../../../auth/domain/entities/user_entity.dart';
@@ -142,20 +142,11 @@ class BookingsController extends GetxController {
     result.fold(
       (failure) {
         errorMessage.value = failure.toString();
-        Get.snackbar(
-          AppStrings.error,
-          errorMessage.value,
-          backgroundColor: AppColors.errorBackground,
-        );
+        SnackbarService.showErrorMessage(failure.message);
       },
       (_) {
-        dailyBookings.add(booking); // Assuming daily booking update
-        Get.snackbar(
-          AppStrings.success,
-          'Booking added.',
-          backgroundColor: AppColors.successBackground,
-          duration: const Duration(seconds: 5),
-        );
+        dailyBookings.add(booking);
+        SnackbarService.showSuccessMessage(AppStrings.bookingAdded);
         Future.delayed(const Duration(milliseconds: 300), () {
           navigateToBookingsList();
         });

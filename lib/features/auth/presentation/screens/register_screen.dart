@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/common/widgets/widgets.dart';
@@ -26,7 +27,15 @@ class RegisterScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 250.h),
+              SizedBox(height: 50.h),
+              SvgPicture.asset(
+                'assets/svg/car5.svg',
+                semanticsLabel: 'Loader',
+                width: 250.w,
+                height: 250.h,
+                // color: AppColors.primary,
+              ),
+              SizedBox(height: 20.h),
               Text(
                 AppStrings.register,
                 style: AppFonts.size32W700,

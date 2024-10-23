@@ -1,12 +1,16 @@
 class AppStrings {
-  static const String appTitle = "Car Workshop App";
+  static const String appTitle = "Car Workshop";
   static const String login = "Login";
   static const String logout = "Log Out";
   static const String register = "Register";
   static const String welcomeMessage = "Welcome to the Car Workshop App!";
   static const String pleaseWait = 'Please wait...';
   static const String success = 'Success';
+  static const String warning = 'Warning';
+  static const String info = 'Info';
   static const String registrationSuccess = 'Registration successful!';
+  static const String bookingAdded = 'Booking added.';
+
   static const String error = 'Oops!';
   static const String name = 'Name';
   static const String email = 'Email';
