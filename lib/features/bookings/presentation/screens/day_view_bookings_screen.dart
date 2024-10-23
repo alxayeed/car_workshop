@@ -22,7 +22,9 @@ class _DayViewBookingsScreenState extends State<DayViewBookingsScreen> {
   @override
   void initState() {
     super.initState();
-    controller.fetchBookingsForDay(selectedDate);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchBookingsForDay(selectedDate);
+    });
   }
 
   void _changeDate(int delta) {
@@ -35,11 +37,49 @@ class _DayViewBookingsScreenState extends State<DayViewBookingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          _buildDateSelector(),
-          Expanded(child: _buildBookingsList()),
-        ],
+      body: RefreshIndicator(
+        onRefresh: () {
+          return controller.fetchBookingsForDay(selectedDate);
+        },
+        child: Obx(() {
+          if (controller.isLoadingDaily.value) {
+            return const CustomLoader();
+          }
+
+          if (controller.errorMessage.isNotEmpty) {
+            return Center(child: Text(controller.errorMessage.value));
+          }
+
+          if (controller.dailyBookings.isEmpty) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildDateSelector(),
+                  SizedBox(height: 20.h),
+                  Image.asset(
+                    "assets/img/no_data.jpg",
+                    height: 400.h,
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return ListView(
+            children: [
+              _buildDateSelector(),
+              SizedBox(height: 20.h), // Add some spacing
+              ...controller.dailyBookings.map((booking) {
+                return GestureDetector(
+                  onTap: () {
+                    Get.toNamed(AppRoutes.bookingDetails, arguments: booking);
+                  },
+                  child: BookingCard(booking: booking),
+                );
+              }),
+            ],
+          );
+        }),
       ),
     );
   }
@@ -64,45 +104,6 @@ class _DayViewBookingsScreenState extends State<DayViewBookingsScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildBookingsList() {
-    return RefreshIndicator(
-      onRefresh: () {
-        return controller.fetchBookingsForDay(selectedDate);
-      },
-      child: Obx(() {
-        if (controller.isLoadingDaily.value) {
-          return const CustomLoader();
-        }
-
-        if (controller.errorMessage.isNotEmpty) {
-          return Center(child: Text(controller.errorMessage.value));
-        }
-
-        if (controller.dailyBookings.isEmpty) {
-          return Image.asset(
-            "assets/img/no_data.jpg",
-            height: 400.h,
-          );
-        }
-
-        return ListView.builder(
-          itemCount: controller.dailyBookings.length,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                Get.toNamed(AppRoutes.bookingDetails,
-                    arguments: controller.dailyBookings[index]);
-              },
-              child: BookingCard(
-                booking: controller.dailyBookings[index],
-              ),
-            );
-          },
-        );
-      }),
     );
   }
 }

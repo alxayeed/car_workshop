@@ -149,6 +149,9 @@ class AddBookingScreen extends StatelessWidget {
                   labelText: bookingsController.isAddingBooking.value
                       ? AppStrings.pleaseWait
                       : AppStrings.addBooking,
+                  backgroundColor: bookingsController.isAddingBooking.value
+                      ? Colors.grey
+                      : Colors.green,
                   onPressed: () {
                     final int carYear = int.parse(carYearController.text);
 
