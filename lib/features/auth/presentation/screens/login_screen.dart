@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/common/widgets/widgets.dart';
@@ -25,7 +26,15 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 250.h),
+              SizedBox(height: 100.h),
+              SvgPicture.asset(
+                'assets/svg/car4.svg',
+                semanticsLabel: 'Loader',
+                width: 200.w,
+                height: 200.h,
+                // color: AppColors.primary,
+              ),
+              SizedBox(height: 20.h),
               Text(
                 AppStrings.login,
                 style: AppFonts.size32W700,

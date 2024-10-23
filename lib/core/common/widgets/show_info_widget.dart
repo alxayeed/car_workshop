@@ -22,14 +22,14 @@ class ShowInfoWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (icon != null) Icon(icon, color: AppColors.primary, size: 22.sp),
+          if (icon != null) Icon(icon, color: AppColors.primary, size: 24.sp),
           SizedBox(width: 8.w),
           Expanded(
             child: Text(
               title,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 18.sp,
+                fontSize: 24.sp,
               ),
             ),
           ),
@@ -37,7 +37,7 @@ class ShowInfoWidget extends StatelessWidget {
             child: Text(
               value,
               style: TextStyle(
-                fontSize: 16.sp,
+                fontSize: 24.sp,
                 color: AppColors.textColor,
               ),
               textAlign: TextAlign.right,

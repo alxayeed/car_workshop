@@ -14,7 +14,7 @@ class CustomDropdownButton<T> extends StatelessWidget {
     required this.value,
     required this.hint,
     required this.onChanged,
-    required this.labelText,
+    this.labelText = "",
   });
 
   @override
@@ -22,11 +22,11 @@ class CustomDropdownButton<T> extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          labelText,
-          style: TextStyle(fontSize: 28.sp),
-        ),
-        SizedBox(height: 8.h),
+        if (labelText.isNotEmpty)
+          Text(
+            labelText,
+            style: TextStyle(fontSize: 28.sp),
+          ),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
           decoration: BoxDecoration(
@@ -51,7 +51,7 @@ class CustomDropdownButton<T> extends StatelessWidget {
               ),
               style: TextStyle(
                 color: Colors.black,
-                fontSize: 18.sp,
+                fontSize: 22.sp,
                 fontWeight: FontWeight.w400,
               ),
             ),

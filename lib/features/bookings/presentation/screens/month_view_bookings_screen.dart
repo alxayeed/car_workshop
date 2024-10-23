@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../../../core/common/widgets/widgets.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../controllers/booking_controller.dart';
 import '../widgets/booking_card.dart';
@@ -132,7 +134,7 @@ class _MonthViewBookingsScreenState extends State<MonthViewBookingsScreen> {
       },
       child: Obx(() {
         if (widget.controller.isLoadingMonthly.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const CustomLoader();
         }
 
         if (widget.controller.errorMessage.isNotEmpty) {
@@ -140,7 +142,12 @@ class _MonthViewBookingsScreenState extends State<MonthViewBookingsScreen> {
         }
 
         if (widget.controller.monthlyBookings.isEmpty) {
-          return const Center(child: Text('No bookings found.'));
+          return Center(
+            child: Image.asset(
+              "assets/img/no_data.jpg",
+              height: 400.h,
+            ),
+          );
         }
 
         return ListView.builder(

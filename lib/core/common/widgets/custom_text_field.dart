@@ -30,11 +30,14 @@ class CustomTextField extends StatelessWidget {
       keyboardType: keyboardType,
       readOnly: readOnly,
       onTap: onTap,
+      onTapOutside: (event) {
+        FocusScope.of(context).unfocus();
+      },
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: TextStyle(
             color: Colors.grey.shade700,
-            fontSize: 18.sp,
+            fontSize: 22.sp,
             fontWeight: FontWeight.w400),
         prefixIcon: prefixIcon != null
             ? Icon(prefixIcon, color: AppColors.borderColor)

@@ -1,4 +1,5 @@
 import 'package:car_workshop/core/constants/app_strings.dart';
+import 'package:car_workshop/core/style/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -50,6 +51,8 @@ class AddBookingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
         title: const Text(AppStrings.addBooking),
       ),
       body: SingleChildScrollView(
@@ -107,7 +110,6 @@ class AddBookingScreen extends StatelessWidget {
             ),
             SizedBox(height: 20.h),
             Obx(() => CustomDropdownButton<UserEntity>(
-                  labelText: AppStrings.assignMechanic,
                   hint: AppStrings.selectMechanic,
                   value: selectedMechanic.value,
                   items: bookingsController.mechanics
@@ -147,8 +149,6 @@ class AddBookingScreen extends StatelessWidget {
                   labelText: bookingsController.isAddingBooking.value
                       ? AppStrings.pleaseWait
                       : AppStrings.addBooking,
-                  backgroundColor: Colors.blue, // Adjust color if needed
-                  foregroundColor: Colors.white,
                   onPressed: () {
                     final int carYear = int.parse(carYearController.text);
 
