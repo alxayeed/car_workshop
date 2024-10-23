@@ -17,4 +17,6 @@ abstract class BookingRemoteDataSource {
 
   Future<Either<Failure, List<BookingModel>>> getBookingsInRange(
       DateTime fromDate, DateTime toDate);
+
+  Future<Either<Failure, void>> deleteBooking(String id);
 }

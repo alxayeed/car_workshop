@@ -1,5 +1,6 @@
 import 'package:car_workshop/core/routes/app_routes.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -12,6 +13,7 @@ import '../../../auth/domain/entities/user_entity.dart';
 import '../../../auth/domain/usecases/get_all_mechanics_use_case.dart';
 import '../../domain/entities/booking_entity.dart';
 import '../../domain/usecases/add_booking_use_case.dart';
+import '../../domain/usecases/delete_booking_use_case.dart';
 import '../../domain/usecases/fetch_daily_bookings_use_case.dart';
 import '../../domain/usecases/fetch_monthly_bookings_use_case.dart';
 import '../../domain/usecases/fetch_weekly_bookings_use_case.dart';
@@ -22,6 +24,7 @@ class BookingsController extends GetxController {
   final FetchMonthlyBookingsUseCase fetchMonthlyBookingsUseCase;
   final AddBookingUseCase addBookingUseCase;
   final GetAllMechanicsUseCase getAllMechanicsUseCase;
+  final DeleteBookingUseCase deleteBookingUseCase;
 
   // Separate lists for daily, weekly, and monthly bookings
   RxList<BookingEntity> dailyBookings = <BookingEntity>[].obs;
@@ -36,6 +39,7 @@ class BookingsController extends GetxController {
   RxBool isLoadingWeekly = false.obs;
   RxBool isLoadingMonthly = false.obs;
   RxBool isAddingBooking = false.obs;
+  RxBool isDeletingBooking = false.obs;
 
   BookingsController(
     this.fetchDailyBookingsUseCase,
@@ -43,6 +47,7 @@ class BookingsController extends GetxController {
     this.fetchMonthlyBookingsUseCase,
     this.addBookingUseCase,
     this.getAllMechanicsUseCase,
+    this.deleteBookingUseCase,
   );
 
   @override
@@ -154,6 +159,45 @@ class BookingsController extends GetxController {
     );
 
     isAddingBooking.value = false;
+  }
+
+  Future<void> deleteBooking(String bookingId) async {
+    Get.dialog(
+      AlertDialog(
+        title: const Text(AppStrings.warning),
+        content: const Text(AppStrings.bookingDeleteConfirmationMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text(AppStrings.cancel),
+          ),
+          TextButton(
+            onPressed: () async {
+              Get.back();
+              isDeletingBooking.value = true;
+              final Either<Failure, void> result =
+                  await deleteBookingUseCase(bookingId);
+
+              result.fold(
+                (failure) {
+                  errorMessage.value = failure.toString();
+                  SnackbarService.showErrorMessage(failure.message);
+                },
+                (_) {
+                  dailyBookings
+                      .removeWhere((booking) => booking.id == bookingId);
+                  SnackbarService.showSuccessMessage(AppStrings.bookingDeleted);
+                  navigateToBookingsList();
+                },
+              );
+
+              isDeletingBooking.value = false;
+            },
+            child: const Text(AppStrings.delete),
+          ),
+        ],
+      ),
+    );
   }
 
   void saveMechanicsToCache() {

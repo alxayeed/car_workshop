@@ -5,11 +5,17 @@ class AppStrings {
   static const String register = "Register";
   static const String welcomeMessage = "Welcome to the Car Workshop App!";
   static const String pleaseWait = 'Please wait...';
+  static const String cancel = 'Cancel';
+  static const String delete = 'Delete';
   static const String success = 'Success';
   static const String warning = 'Warning';
   static const String info = 'Info';
   static const String registrationSuccess = 'Registration successful!';
+  static const String bookingDeleteConfirmationMessage =
+      'Are you sure you want to delete this booking?';
+
   static const String bookingAdded = 'Booking added.';
+  static const String bookingDeleted = 'Booking deleted.';
 
   static const String error = 'Oops!';
   static const String name = 'Name';

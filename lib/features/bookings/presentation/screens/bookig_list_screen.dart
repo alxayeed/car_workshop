@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/services/auth_service.dart';
 import '../controllers/booking_controller.dart';
 import '../screens/add_booking_screen.dart';
 import '../screens/day_view_bookings_screen.dart';
@@ -14,7 +15,13 @@ import '../screens/month_view_bookings_screen.dart';
 class BookingsListScreen extends StatefulWidget {
   final BookingsController controller = Get.put(
     BookingsController(
-        Get.find(), Get.find(), Get.find(), Get.find(), Get.find()),
+      Get.find(),
+      Get.find(),
+      Get.find(),
+      Get.find(),
+      Get.find(),
+      Get.find(),
+    ),
   );
 
   BookingsListScreen({super.key});
@@ -25,6 +32,7 @@ class BookingsListScreen extends StatefulWidget {
 
 class _BookingsListScreenState extends State<BookingsListScreen> {
   int currentTabIndex = 0;
+  final AuthService authService = Get.find<AuthService>();
 
   @override
   Widget build(BuildContext context) {
@@ -95,17 +103,19 @@ class _BookingsListScreenState extends State<BookingsListScreen> {
             MonthViewBookingsScreen(),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: AppColors.primary,
-          onPressed: () {
-            Get.to(() => AddBookingScreen());
-          },
-          tooltip: 'Add Booking',
-          child: const Icon(
-            Icons.add,
-            color: Colors.white,
-          ),
-        ),
+        floatingActionButton: !authService.isMechanic
+            ? FloatingActionButton(
+                backgroundColor: AppColors.primary,
+                onPressed: () {
+                  Get.to(() => AddBookingScreen());
+                },
+                tooltip: 'Add Booking',
+                child: const Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ),
+              )
+            : const SizedBox(),
       ),
     );
   }

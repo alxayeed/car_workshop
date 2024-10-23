@@ -18,4 +18,6 @@ abstract class BookingRepository {
 
   Future<Either<Failure, List<BookingEntity>>> fetchBookingsInRange(
       DateTime fromDate, DateTime toDate);
+
+  Future<Either<Failure, void>> deleteBooking(String id);
 }

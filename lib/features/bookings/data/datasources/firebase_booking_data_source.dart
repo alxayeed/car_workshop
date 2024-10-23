@@ -147,4 +147,15 @@ class FirebaseBookingDataSource implements BookingRemoteDataSource {
       return Left(ServerFailure(error.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> deleteBooking(String id) async {
+    try {
+      print("DELETING BOOKING ID: $id");
+      await fireStore.collection('bookings').doc(id).delete();
+      return const Right(null);
+    } catch (error) {
+      return Left(ServerFailure(error.toString()));
+    }
+  }
 }

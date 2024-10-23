@@ -65,4 +65,14 @@ class BookingRepositoryImpl implements BookingRepository {
     return result.map((bookingModels) =>
         bookingModels.map((model) => model.toEntity()).toList());
   }
+
+  @override
+  Future<Either<Failure, void>> deleteBooking(String id) async {
+    try {
+      await remoteDataSource.deleteBooking(id);
+      return const Right(null);
+    } catch (error) {
+      return Left(ServerFailure(error.toString()));
+    }
+  }
 }

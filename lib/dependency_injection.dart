@@ -1,3 +1,4 @@
+import 'package:car_workshop/features/bookings/domain/usecases/delete_booking_use_case.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -81,6 +82,8 @@ class DependencyInjection {
     Get.put<AddBookingUseCase>(
         AddBookingUseCase(Get.find<BookingRepository>()));
 
+    Get.put<DeleteBookingUseCase>(
+        DeleteBookingUseCase(Get.find<BookingRepository>()));
     Get.put<AuthController>(AuthController(
       Get.find<RegisterUserUseCase>(),
       Get.find<LoginUserUseCase>(),
@@ -88,10 +91,12 @@ class DependencyInjection {
     ));
 
     Get.put<BookingsController>(BookingsController(
-        Get.find<FetchDailyBookingsUseCase>(),
-        Get.find<FetchWeeklyBookingsUseCase>(),
-        Get.find<FetchMonthlyBookingsUseCase>(),
-        Get.find<AddBookingUseCase>(),
-        Get.find<GetAllMechanicsUseCase>()));
+      Get.find<FetchDailyBookingsUseCase>(),
+      Get.find<FetchWeeklyBookingsUseCase>(),
+      Get.find<FetchMonthlyBookingsUseCase>(),
+      Get.find<AddBookingUseCase>(),
+      Get.find<GetAllMechanicsUseCase>(),
+      Get.find<DeleteBookingUseCase>(),
+    ));
   }
 }

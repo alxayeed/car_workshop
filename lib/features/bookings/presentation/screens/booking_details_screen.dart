@@ -1,8 +1,11 @@
+import 'package:car_workshop/features/bookings/presentation/controllers/booking_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/common/widgets/widgets.dart';
+import '../../../../core/services/auth_service.dart';
 import '../../../../core/style/app_colors.dart';
 import '../../domain/entities/booking_entity.dart';
 
@@ -14,12 +17,28 @@ class BookingDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final DateFormat dateFormat = DateFormat('dd MMMM, yyyy');
+    BookingsController bookingsController = Get.find();
+    final AuthService authService = Get.find<AuthService>();
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         title: Text(booking.title),
+        actions: [
+          !authService.isMechanic
+              ? IconButton(
+                  onPressed: () {
+                    bookingsController.deleteBooking(booking.id);
+                  },
+                  icon: Icon(
+                    size: 36.sp,
+                    Icons.delete,
+                    color: AppColors.errorBackground,
+                  ),
+                )
+              : const SizedBox.shrink()
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
